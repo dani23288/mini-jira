@@ -1,13 +1,7 @@
-// Uncomment this line to use CSS modules
-// import styles from './app.module.css';
-import NxWelcome from './nx-welcome';
+import { Board } from './board/board';
 
 export function App() {
-  return (
-    <div>
-      <NxWelcome title="@org/frontend" />
-    </div>
-  );
+  return <Board />;
 }
 
 export default App;
