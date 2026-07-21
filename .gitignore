@@ -1,8 +1,12 @@
 # Nestjs specific
-/dist
-/node_modules
+dist/
+node_modules/
 /build
 /tmp
+
+# Nx
+.nx/cache
+.nx/workspace-data
 
 # Logs
 logs
