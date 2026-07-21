@@ -22,10 +22,10 @@ Wiring
 - [x] Wire modal submit → `createTicket` / `updateTicket`.
 
 Search
-- [ ] Search bar above board, filters cards by title.
+- [x] Search bar above board, filters cards by title.
 
 Final
-- [ ] Manual QA pass: create, edit, delete, status change, search, window resize. No automated tests in phase 1.
+- [x] Manual QA pass: create, edit, delete, status change, and search all verified working in-browser. Window-resize behavior relies on standard `flex-wrap` CSS (not visually re-verified at a narrow viewport due to a browser-automation tool limitation in this session). No automated tests in phase 1.
 
 ## Phase 2 ideas (not yet scheduled)
 
