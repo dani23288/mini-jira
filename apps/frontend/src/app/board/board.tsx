@@ -10,6 +10,7 @@ export function Board() {
   const { tickets, createTicket, updateTicket, updateStatus, deleteTicket } = useTickets();
   const [editingTicket, setEditingTicket] = useState<ITicket | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const isModalOpen = isCreating || editingTicket !== null;
 
@@ -18,18 +19,33 @@ export function Board() {
     setEditingTicket(null);
   };
 
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const visibleTickets = normalizedQuery
+    ? tickets.filter((ticket) => ticket.title.toLowerCase().includes(normalizedQuery))
+    : tickets;
+
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>Ticket Desk</h1>
-        <button type="button" className={styles.newTicketButton} onClick={() => setIsCreating(true)}>
-          + New ticket
-        </button>
+        <div className={styles.headerActions}>
+          <input
+            type="search"
+            className={styles.searchInput}
+            placeholder="Search tickets…"
+            aria-label="Search tickets by title"
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+          />
+          <button type="button" className={styles.newTicketButton} onClick={() => setIsCreating(true)}>
+            + New ticket
+          </button>
+        </div>
       </header>
 
       <div className={styles.columns}>
         {TICKET_STATUSES.map((status) => {
-          const columnTickets = tickets.filter((ticket) => ticket.status === status.value);
+          const columnTickets = visibleTickets.filter((ticket) => ticket.status === status.value);
           return (
             <section key={status.value} className={styles.column} aria-label={status.label}>
               <div className={styles.columnHeader}>
