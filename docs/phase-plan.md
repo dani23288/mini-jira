@@ -4,22 +4,22 @@
 
 Data layer
 - [x] Shared libs: `packages/shared/types` (`ITicket`, `TicketStatus`, `TicketPriority`, `ICreateTicketInput`, `IUpdateTicketInput`, `IUseTicketsResult`) and `packages/shared/consts` (`TICKET_STATUSES`, `TICKET_PRIORITIES`, defaults).
-- [ ] Design tokens: CSS custom properties for pastel-pink theme (colors, spacing, typography).
-- [ ] Mock ticket data set.
-- [ ] `useTickets()` hook (in-memory, implements `IUseTicketsResult`; resets on refresh, no persistence).
+- [x] Design tokens: CSS custom properties for pastel-pink theme (colors, spacing, typography) in `apps/frontend/src/styles/`.
+- [x] Mock ticket data set (`apps/frontend/src/data/mock-tickets.ts`).
+- [x] `useTickets()` hook (in-memory, implements `IUseTicketsResult`; resets on refresh, no persistence).
 
 Board & components
-- [ ] Board layout: columns from `TICKET_STATUSES` config, fluid flex/grid (resize-safe, no dedicated mobile pass).
-- [ ] `TicketCard`: title, priority badge, description snippet.
-- [ ] Card "⋯" menu: Edit, Delete (red). Delete is immediate (no confirmation yet).
-- [ ] Per-ticket status control (dropdown/buttons) — built so a drag-and-drop wrapper can be added later without restructuring.
-- [ ] Create/Edit modal (shared component). Only `title` required; `description` optional; `priority` defaults to Medium; `status` defaults to first column.
+- [x] Board layout: columns from `TICKET_STATUSES` config, fluid flex/grid (resize-safe, no dedicated mobile pass).
+- [x] `TicketCard`: title, priority badge, description snippet, washi-tape priority accent.
+- [x] Card "⋯" menu: Edit, Delete (red). Delete is immediate (no confirmation yet).
+- [x] Per-ticket status control (dropdown) — built so a drag-and-drop wrapper can be added later without restructuring.
+- [x] Create/Edit modal (shared component). Only `title` required; `description` optional; `priority` defaults to Medium; `status` defaults to first column.
 
 Wiring
-- [ ] Wire Board + TicketCard to `useTickets()`.
-- [ ] Wire menu Edit → modal (pre-filled) / Delete → `deleteTicket`.
-- [ ] Wire status control → `updateStatus`.
-- [ ] Wire modal submit → `createTicket` / `updateTicket`.
+- [x] Wire Board + TicketCard to `useTickets()`.
+- [x] Wire menu Edit → modal (pre-filled) / Delete → `deleteTicket`.
+- [x] Wire status control → `updateStatus`.
+- [x] Wire modal submit → `createTicket` / `updateTicket`.
 
 Search
 - [ ] Search bar above board, filters cards by title.
