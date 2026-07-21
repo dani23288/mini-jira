@@ -1,21 +1,14 @@
-import { useState, type FormEvent } from 'react';
-import type { ITicket, TicketPriority, TicketStatus } from '@org/types';
+import { useState, type SubmitEvent } from 'react';
+import type { TicketPriority, TicketStatus } from '@org/types';
 import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { Button } from '../button/button';
+import {
+  DESCRIPTION_TEXTAREA_ROWS,
+  TICKET_MODAL_SUBMIT_LABEL_BY_MODE,
+  TICKET_MODAL_TITLE_BY_MODE,
+} from './ticket-modal.consts';
+import type { ITicketModalProps } from './ticket-modal.types';
 import styles from './ticket-modal.module.css';
-
-export interface ITicketFormValues {
-  title: string;
-  description?: string;
-  priority: TicketPriority;
-  status: TicketStatus;
-}
-
-interface ITicketModalProps {
-  mode: 'create' | 'edit';
-  initialTicket?: ITicket;
-  onClose: () => void;
-  onSubmit: (values: ITicketFormValues) => void;
-}
 
 export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketModalProps) {
   const [title, setTitle] = useState(initialTicket?.title ?? '');
@@ -24,7 +17,7 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
   const [status, setStatus] = useState<TicketStatus>(initialTicket?.status ?? DEFAULT_TICKET_STATUS);
   const [showTitleError, setShowTitleError] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
@@ -48,8 +41,8 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
         aria-labelledby="ticket-modal-title"
         onClick={(event) => event.stopPropagation()}
       >
-        <h2 id="ticket-modal-title" className={styles.modalTitle}>
-          {mode === 'create' ? 'New ticket' : 'Edit ticket'}
+        <h2 id="ticket-modal-title" className={styles['modal-title']}>
+          {TICKET_MODAL_TITLE_BY_MODE[mode]}
         </h2>
 
         <form className={styles.form} onSubmit={handleSubmit}>
@@ -67,7 +60,7 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
                 }
               }}
             />
-            {showTitleError && <span className={styles.errorText}>Title is required.</span>}
+            {showTitleError && <span className={styles['error-text']}>Title is required.</span>}
           </label>
 
           <label className={styles.field}>
@@ -75,7 +68,7 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
             <textarea
               className={styles.textarea}
               value={description}
-              rows={3}
+              rows={DESCRIPTION_TEXTAREA_ROWS}
               onChange={(event) => setDescription(event.target.value)}
             />
           </label>
@@ -113,12 +106,10 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
           </div>
 
           <div className={styles.actions}>
-            <button type="button" className={styles.cancelButton} onClick={onClose}>
+            <Button type="button" variant="secondary" onClick={onClose}>
               Cancel
-            </button>
-            <button type="submit" className={styles.submitButton}>
-              {mode === 'create' ? 'Create ticket' : 'Save changes'}
-            </button>
+            </Button>
+            <Button type="submit">{TICKET_MODAL_SUBMIT_LABEL_BY_MODE[mode]}</Button>
           </div>
         </form>
       </div>

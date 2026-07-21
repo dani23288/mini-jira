@@ -2,8 +2,11 @@ import { useState } from 'react';
 import type { ITicket } from '@org/types';
 import { TICKET_STATUSES } from '@org/consts';
 import { useTickets } from '../../hooks/use-tickets';
+import { Button } from '../../components/button/button';
+import { SearchBar } from '../../components/search-bar/search-bar';
 import { TicketCard } from '../../components/ticket-card/ticket-card';
 import { TicketModal } from '../../components/ticket-modal/ticket-modal';
+import { filterTicketsByQuery, getTicketsByStatus } from './board.utils';
 import styles from './board.module.css';
 
 export function Board() {
@@ -12,47 +15,35 @@ export function Board() {
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const isModalOpen = isCreating || editingTicket !== null;
+  const isModalOpen = !!(isCreating || editingTicket);
 
   const closeModal = () => {
     setIsCreating(false);
     setEditingTicket(null);
   };
 
-  const normalizedQuery = searchQuery.trim().toLowerCase();
-  const visibleTickets = normalizedQuery
-    ? tickets.filter((ticket) => ticket.title.toLowerCase().includes(normalizedQuery))
-    : tickets;
+  const visibleTickets = filterTicketsByQuery(tickets, searchQuery);
 
   return (
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>Ticket Desk</h1>
-        <div className={styles.headerActions}>
-          <input
-            type="search"
-            className={styles.searchInput}
-            placeholder="Search tickets…"
-            aria-label="Search tickets by title"
-            value={searchQuery}
-            onChange={(event) => setSearchQuery(event.target.value)}
-          />
-          <button type="button" className={styles.newTicketButton} onClick={() => setIsCreating(true)}>
-            + New ticket
-          </button>
+        <div className={styles['header-actions']}>
+          <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search tickets…" />
+          <Button onClick={() => setIsCreating(true)}>+ New ticket</Button>
         </div>
       </header>
 
       <div className={styles.columns}>
         {TICKET_STATUSES.map((status) => {
-          const columnTickets = visibleTickets.filter((ticket) => ticket.status === status.value);
+          const columnTickets = getTicketsByStatus(visibleTickets, status.value);
           return (
             <section key={status.value} className={styles.column} aria-label={status.label}>
-              <div className={styles.columnHeader}>
-                <h2 className={styles.columnTitle}>{status.label}</h2>
-                <span className={styles.columnCount}>{columnTickets.length}</span>
+              <div className={styles['column-header']}>
+                <h2 className={styles['column-title']}>{status.label}</h2>
+                <span className={styles['column-count']}>{columnTickets.length}</span>
               </div>
-              <div className={styles.columnList}>
+              <div className={styles['column-list']}>
                 {columnTickets.map((ticket) => (
                   <TicketCard
                     key={ticket.id}
