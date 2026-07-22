@@ -1,6 +1,6 @@
 # Ticket Desk — Frontend Plan
 
-## Phase 1 (current)
+## Phase 1 (complete)
 
 Data layer
 - [x] Shared libs: `packages/shared/types` (`ITicket`, `TicketStatus`, `TicketPriority`, `ICreateTicketInput`, `IUpdateTicketInput`, `IUseTicketsResult`) and `packages/shared/consts` (`TICKET_STATUSES`, `TICKET_PRIORITIES`, defaults).
@@ -27,7 +27,7 @@ Search
 Final
 - [x] Manual QA pass: create, edit, delete, status change, and search all verified working in-browser. Window-resize behavior relies on standard `flex-wrap` CSS (not visually re-verified at a narrow viewport due to a browser-automation tool limitation in this session). No automated tests in phase 1.
 
-## Phase 2 ideas (not yet scheduled)
+## Phase 2 (current)
 
 - Drag-and-drop status changes (layered on top of the existing per-ticket control, same `updateStatus` call).
 - Delete confirmation dialog.
