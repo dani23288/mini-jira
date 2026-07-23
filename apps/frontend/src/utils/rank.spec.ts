@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getRankForEnd, getRankForIndex } from './rank';
+import { assignSequentialRanks, getRankForEnd, getRankForIndex } from './rank';
 
 describe('getRankForEnd', () => {
   it('returns a rank when the column is empty', () => {
@@ -41,5 +41,28 @@ describe('getRankForIndex', () => {
 
     expect(inserted > first).toBe(true);
     expect(inserted < third).toBe(true);
+  });
+});
+
+describe('assignSequentialRanks', () => {
+  it('gives each item a rank', () => {
+    const result = assignSequentialRanks([
+      { status: 'todo' as const },
+      { status: 'todo' as const },
+      { status: 'done' as const },
+    ]);
+
+    expect(result.every((item) => item.rank)).toBe(true);
+  });
+
+  it('keeps input order within each status column', () => {
+    const result = assignSequentialRanks([
+      { id: 'a', status: 'todo' as const },
+      { id: 'b', status: 'done' as const },
+      { id: 'c', status: 'todo' as const },
+    ]);
+
+    const todoRanks = result.filter((item) => item.status === 'todo').map((item) => item.rank);
+    expect(todoRanks).toEqual([...todoRanks].sort());
   });
 });

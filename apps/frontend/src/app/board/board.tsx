@@ -20,7 +20,7 @@ import { BoardColumn } from '../../components/board-column/board-column';
 import { TicketCardOverlay } from '../../components/ticket-card/ticket-card';
 import { TicketModal } from '../../components/ticket-modal/ticket-modal';
 import { getRankForIndex } from '../../utils/rank';
-import { filterTicketsByQuery, getTicketsByStatus } from './board.utils';
+import { filterTicketsByQuery, getDropInsertIndex, getTicketsByStatus } from './board.utils';
 import styles from './board.module.css';
 
 export function Board() {
@@ -108,16 +108,7 @@ export function Board() {
     const destinationColumnTickets = getTicketsByStatus(tickets, destinationStatus).filter(
       (ticket) => ticket.id !== activeId,
     );
-
-    let insertIndex = destinationColumnTickets.length;
-    if (overTicket) {
-      const overIndex = destinationColumnTickets.findIndex((ticket) => ticket.id === overTicket.id);
-      const activeRect = active.rect.current.translated;
-      const isPastOverCenter = activeRect
-        ? activeRect.top + activeRect.height / 2 > over.rect.top + over.rect.height / 2
-        : false;
-      insertIndex = isPastOverCenter ? overIndex + 1 : overIndex;
-    }
+    const insertIndex = getDropInsertIndex(destinationColumnTickets, overTicket, active, over);
 
     const rank = getRankForIndex(
       destinationColumnTickets.map((ticket) => ticket.rank),

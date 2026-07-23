@@ -1,5 +1,5 @@
-import type { ITicket, TicketStatus } from '@org/types';
-import { getRankForEnd } from '../utils/rank';
+import type { ITicket } from '@org/types';
+import { assignSequentialRanks } from '../utils/rank';
 
 export function createMockTickets(): ITicket[] {
   const tickets: Omit<ITicket, 'rank'>[] = [
@@ -51,11 +51,5 @@ export function createMockTickets(): ITicket[] {
     },
   ];
 
-  const lastRankByStatus: Partial<Record<TicketStatus, string>> = {};
-  return tickets.map((ticket) => {
-    const columnRanks = lastRankByStatus[ticket.status] ? [lastRankByStatus[ticket.status]!] : [];
-    const rank = getRankForEnd(columnRanks);
-    lastRankByStatus[ticket.status] = rank;
-    return { ...ticket, rank };
-  });
+  return assignSequentialRanks(tickets);
 }
