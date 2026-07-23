@@ -29,7 +29,7 @@ Final
 
 ## Phase 2 (current)
 
-- Drag-and-drop status changes (layered on top of the existing per-ticket control, same `updateStatus` call).
+- [x] Drag-and-drop: cross-column status changes and within-column reordering (`@dnd-kit`), backed by a fractional-indexing `rank` field so order survives search filtering. Per-ticket status dropdown kept as the non-drag alternative, now built on the custom `dropdown-menu` component. Manually verified in-browser (cross-column moves, reordering, dropping between the last two cards of a column, dropping into an empty column).
 - Delete confirmation dialog.
 - Priority filtering.
 - A separate list/table view (sortable by priority, still filterable by status).
