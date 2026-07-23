@@ -9,5 +9,7 @@ export function filterTicketsByQuery(tickets: ITicket[], query: string): ITicket
 }
 
 export function getTicketsByStatus(tickets: ITicket[], status: TicketStatus): ITicket[] {
-  return tickets.filter((ticket) => ticket.status === status);
+  return tickets
+    .filter((ticket) => ticket.status === status)
+    .sort((a, b) => (a.rank < b.rank ? -1 : a.rank > b.rank ? 1 : 0));
 }

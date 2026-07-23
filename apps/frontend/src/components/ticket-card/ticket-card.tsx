@@ -1,16 +1,19 @@
-import type { TicketStatus } from '@org/types';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
 import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
 import { getTapeRotation } from './ticket-card.utils';
-import type { ITicketCardProps } from './ticket-card.types';
+import type { ITicketCardOverlayProps, ITicketCardProps } from './ticket-card.types';
 import styles from './ticket-card.module.css';
 
-export function TicketCard({ ticket, onEdit, onDelete, onStatusChange }: ITicketCardProps) {
+function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCardProps) {
   const priorityLabel =
     TICKET_PRIORITIES.find((option) => option.value === ticket.priority)?.label ?? ticket.priority;
+  const statusLabel =
+    TICKET_STATUSES.find((option) => option.value === ticket.status)?.label ?? ticket.status;
 
   return (
-    <div className={styles.card}>
+    <>
       <div
         className={styles.tape}
         style={{
@@ -36,19 +39,49 @@ export function TicketCard({ ticket, onEdit, onDelete, onStatusChange }: ITicket
         <span className={styles['priority-badge']} data-priority={ticket.priority}>
           {priorityLabel}
         </span>
-        <select
-          className={styles['status-select']}
-          value={ticket.status}
-          aria-label="Ticket status"
-          onChange={(event) => onStatusChange(event.target.value as TicketStatus)}
-        >
-          {TICKET_STATUSES.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu
+          triggerLabel="Change ticket status"
+          triggerClassName={styles['status-trigger']}
+          triggerContent={
+            <>
+              {statusLabel} <span aria-hidden="true">▾</span>
+            </>
+          }
+          items={TICKET_STATUSES.map((option) => ({
+            label: option.label,
+            onSelect: () => onStatusChange(option.value),
+            isActive: option.value === ticket.status,
+          }))}
+        />
       </div>
+    </>
+  );
+}
+
+export function TicketCard(props: ITicketCardProps) {
+  const { ticket } = props;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: ticket.id,
+  });
+  const cardClassName = isDragging ? `${styles.card} ${styles.dragging}` : styles.card;
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={cardClassName}
+      {...attributes}
+      {...listeners}
+    >
+      <TicketCardBody {...props} />
+    </div>
+  );
+}
+
+export function TicketCardOverlay({ ticket }: ITicketCardOverlayProps) {
+  return (
+    <div className={`${styles.card} ${styles.overlay}`} aria-hidden="true">
+      <TicketCardBody ticket={ticket} onEdit={() => {}} onDelete={() => {}} onStatusChange={() => {}} />
     </div>
   );
 }

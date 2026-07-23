@@ -1,7 +1,8 @@
-import type { ITicket } from '@org/types';
+import type { ITicket, TicketStatus } from '@org/types';
+import { getRankForEnd } from '../utils/rank';
 
 export function createMockTickets(): ITicket[] {
-  return [
+  const tickets: Omit<ITicket, 'rank'>[] = [
     {
       id: crypto.randomUUID(),
       title: 'Fix login redirect loop',
@@ -49,4 +50,12 @@ export function createMockTickets(): ITicket[] {
       createdAt: '2026-07-11T11:30:00.000Z',
     },
   ];
+
+  const lastRankByStatus: Partial<Record<TicketStatus, string>> = {};
+  return tickets.map((ticket) => {
+    const columnRanks = lastRankByStatus[ticket.status] ? [lastRankByStatus[ticket.status]!] : [];
+    const rank = getRankForEnd(columnRanks);
+    lastRankByStatus[ticket.status] = rank;
+    return { ...ticket, rank };
+  });
 }

@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@org/consts": "workspace:*",
     "@org/types": "workspace:*",
-    "@org/consts": "workspace:*"
+    "fractional-indexing": "^4.0.0"
   }
 }

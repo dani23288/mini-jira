@@ -6,3 +6,7 @@ export interface ITicketCardProps {
   onDelete: () => void;
   onStatusChange: (status: TicketStatus) => void;
 }
+
+export interface ITicketCardOverlayProps {
+  ticket: ITicket;
+}

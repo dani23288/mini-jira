@@ -8,6 +8,7 @@ export interface ITicket {
   description?: string;
   status: TicketStatus;
   priority: TicketPriority;
+  rank: string;
   createdAt: string;
 }
 
@@ -30,5 +31,6 @@ export interface IUseTicketsResult {
   createTicket(input: ICreateTicketInput): ITicket;
   updateTicket(id: string, changes: IUpdateTicketInput): void;
   updateStatus(id: string, status: TicketStatus): void;
+  moveTicket(id: string, status: TicketStatus, rank: string): void;
   deleteTicket(id: string): void;
 }

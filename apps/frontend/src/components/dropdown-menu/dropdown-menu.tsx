@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import type { IDropdownMenuProps } from './dropdown-menu.types';
 import styles from './dropdown-menu.module.css';
 
-export function DropdownMenu({ items, triggerLabel = 'Actions' }: IDropdownMenuProps) {
+export function DropdownMenu({
+  items,
+  triggerLabel = 'Actions',
+  triggerContent = '⋯',
+  triggerClassName,
+}: IDropdownMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -23,13 +28,13 @@ export function DropdownMenu({ items, triggerLabel = 'Actions' }: IDropdownMenuP
     <div className={styles['menu-wrapper']} ref={wrapperRef}>
       <button
         type="button"
-        className={styles['menu-trigger']}
+        className={triggerClassName ? `${styles['menu-trigger']} ${triggerClassName}` : styles['menu-trigger']}
         aria-label={triggerLabel}
         aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
       >
-        ⋯
+        {triggerContent}
       </button>
       {isOpen && (
         <div className={styles.menu} role="menu">
@@ -39,11 +44,13 @@ export function DropdownMenu({ items, triggerLabel = 'Actions' }: IDropdownMenuP
               type="button"
               className={item.variant === 'danger' ? styles['menu-item-danger'] : styles['menu-item']}
               role="menuitem"
+              aria-current={item.isActive || undefined}
               onClick={() => {
                 setIsOpen(false);
                 item.onSelect();
               }}
             >
+              {item.isActive && <span aria-hidden="true">✓ </span>}
               {item.label}
             </button>
           ))}
