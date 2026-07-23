@@ -29,3 +29,14 @@
 .button-secondary:hover {
   background-color: var(--color-border);
 }
+
+.button-danger {
+  color: var(--color-primary-ink);
+  background-color: var(--color-danger);
+  box-shadow: var(--shadow-sm);
+}
+
+.button-danger:hover {
+  background-color: var(--color-danger-hover);
+  transform: translateY(-1px);
+}

@@ -8,17 +8,28 @@ import type {
 } from '@org/types';
 import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS } from '@org/consts';
 import { createMockTickets } from '../data/mock-tickets';
+import { getRankForEnd } from '../utils/rank';
+
+function ranksForStatus(tickets: ITicket[], status: TicketStatus, excludeId?: string): string[] {
+  return tickets
+    .filter((ticket) => ticket.status === status && ticket.id !== excludeId)
+    .map((ticket) => ticket.rank)
+    .sort();
+}
 
 export function useTickets(): IUseTicketsResult {
   const [tickets, setTickets] = useState<ITicket[]>(createMockTickets);
 
   const createTicket = (input: ICreateTicketInput): ITicket => {
+    const status = input.status ?? DEFAULT_TICKET_STATUS;
     const ticket: ITicket = {
       id: crypto.randomUUID(),
       title: input.title,
       description: input.description,
-      status: input.status ?? DEFAULT_TICKET_STATUS,
+      status,
       priority: input.priority ?? DEFAULT_TICKET_PRIORITY,
+      assigneeId: input.assigneeId,
+      rank: getRankForEnd(ranksForStatus(tickets, status)),
       createdAt: new Date().toISOString(),
     };
     setTickets((prev) => [...prev, ticket]);
@@ -32,12 +43,21 @@ export function useTickets(): IUseTicketsResult {
   };
 
   const updateStatus = (id: string, status: TicketStatus): void => {
-    updateTicket(id, { status });
+    setTickets((prev) => {
+      const rank = getRankForEnd(ranksForStatus(prev, status, id));
+      return prev.map((ticket) => (ticket.id === id ? { ...ticket, status, rank } : ticket));
+    });
+  };
+
+  const moveTicket = (id: string, status: TicketStatus, rank: string): void => {
+    setTickets((prev) =>
+      prev.map((ticket) => (ticket.id === id ? { ...ticket, status, rank } : ticket)),
+    );
   };
 
   const deleteTicket = (id: string): void => {
     setTickets((prev) => prev.filter((ticket) => ticket.id !== id));
   };
 
-  return { tickets, createTicket, updateTicket, updateStatus, deleteTicket };
+  return { tickets, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket };
 }

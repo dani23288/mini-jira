@@ -1,7 +1,8 @@
 import { useState, type SubmitEvent } from 'react';
 import type { TicketPriority, TicketStatus } from '@org/types';
-import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { ASSIGNEES, DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
 import { Button } from '../button/button';
+import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
 import {
   DESCRIPTION_TEXTAREA_ROWS,
   TICKET_MODAL_SUBMIT_LABEL_BY_MODE,
@@ -15,7 +16,12 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
   const [description, setDescription] = useState(initialTicket?.description ?? '');
   const [priority, setPriority] = useState<TicketPriority>(initialTicket?.priority ?? DEFAULT_TICKET_PRIORITY);
   const [status, setStatus] = useState<TicketStatus>(initialTicket?.status ?? DEFAULT_TICKET_STATUS);
+  const [assigneeId, setAssigneeId] = useState(initialTicket?.assigneeId ?? '');
   const [showTitleError, setShowTitleError] = useState(false);
+
+  const priorityLabel = TICKET_PRIORITIES.find((option) => option.value === priority)?.label ?? priority;
+  const statusLabel = TICKET_STATUSES.find((option) => option.value === status)?.label ?? status;
+  const assigneeLabel = ASSIGNEES.find((option) => option.id === assigneeId)?.name ?? 'Unassigned';
 
   const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,6 +35,7 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
       description: description.trim() || undefined,
       priority,
       status,
+      assigneeId: assigneeId || undefined,
     });
   };
 
@@ -74,35 +81,65 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
           </label>
 
           <div className={styles.row}>
-            <label className={styles.field}>
+            <div className={styles.field}>
               <span className={styles.label}>Priority</span>
-              <select
-                className={styles.select}
-                value={priority}
-                onChange={(event) => setPriority(event.target.value as TicketPriority)}
-              >
-                {TICKET_PRIORITIES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <DropdownMenu
+                triggerLabel="Priority"
+                align="left"
+                triggerClassName={styles['field-trigger']}
+                triggerContent={
+                  <>
+                    {priorityLabel} <span aria-hidden="true">▾</span>
+                  </>
+                }
+                items={TICKET_PRIORITIES.map((option) => ({
+                  label: option.label,
+                  onSelect: () => setPriority(option.value),
+                  isActive: option.value === priority,
+                }))}
+              />
+            </div>
 
-            <label className={styles.field}>
+            <div className={styles.field}>
               <span className={styles.label}>Status</span>
-              <select
-                className={styles.select}
-                value={status}
-                onChange={(event) => setStatus(event.target.value as TicketStatus)}
-              >
-                {TICKET_STATUSES.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </label>
+              <DropdownMenu
+                triggerLabel="Status"
+                align="left"
+                triggerClassName={styles['field-trigger']}
+                triggerContent={
+                  <>
+                    {statusLabel} <span aria-hidden="true">▾</span>
+                  </>
+                }
+                items={TICKET_STATUSES.map((option) => ({
+                  label: option.label,
+                  onSelect: () => setStatus(option.value),
+                  isActive: option.value === status,
+                }))}
+              />
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <span className={styles.label}>Assignee</span>
+            <DropdownMenu
+              triggerLabel="Assignee"
+              align="left"
+              triggerClassName={styles['field-trigger']}
+              triggerContent={
+                <>
+                  <bdi>{assigneeLabel}</bdi> <span aria-hidden="true">▾</span>
+                </>
+              }
+              items={[
+                { label: 'Unassigned', onSelect: () => setAssigneeId(''), isActive: assigneeId === '' },
+                ...ASSIGNEES.map((assignee) => ({
+                  label: assignee.name,
+                  onSelect: () => setAssigneeId(assignee.id),
+                  isActive: assigneeId === assignee.id,
+                })),
+              ]}
+            />
           </div>
 
           <div className={styles.actions}>

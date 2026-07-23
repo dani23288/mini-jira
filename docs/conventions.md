@@ -32,6 +32,19 @@ Extract reusable UI into its own component rather than inlining it repeatedly. `
 
 Style via explicit classes, not bare tag selectors (no `h1, h2, h3 {}` or `button, input {}`). Exceptions: the universal selector (`*`) for resets like box-sizing, and pseudo-classes like `:focus-visible` — these aren't "element" selectors in the sense being avoided. Singleton root nodes (`html`, `body`, `#root`) get an explicit class in `index.html` (e.g. `class="app-shell"`) rather than being styled by tag name.
 
+## Testing
+
+Spec files live in a `test/` subfolder next to the code they cover, not flat alongside it — e.g. `board/test/board.utils.spec.ts` for `board/board.utils.ts`.
+
+Within `test/`, put reusable pieces in a `stubs/` subfolder rather than inline in the spec file:
+
+- `stubs/<name>.stub.ts` — fixture builder functions (e.g. `makeTicket`, `makeActive` in `stubs/board.utils.stub.ts`).
+- `stubs/<name>.cases.ts` — the arrays of cases used by `it.each`, so the spec file only wires cases to assertions.
+
+Prefer `it.each` over near-duplicate `it(...)` blocks whenever multiple tests share the same assertion shape and differ only in input/output. When a cases array mixes differently-shaped inputs (e.g. a `Partial<SomeFilters>` field), give it an explicit type annotation — TypeScript otherwise widens array-literal fields (e.g. a string-literal union narrows to plain `string[]`), which can silently swallow real type errors.
+
+Example: `apps/frontend/src/app/board/test/` → `board.utils.spec.ts`, `stubs/board.utils.stub.ts`, `stubs/board.utils.cases.ts`.
+
 ## Shared library structure
 
 Shared code (used by both frontend and the future backend) is grouped by *kind*, not by feature. Each kind is its own Nx package under `packages/shared/<kind>/` (currently `types` and `consts`), and inside it, per-feature files are named after the feature — e.g. `packages/shared/types/src/lib/ticket.ts` and `packages/shared/consts/src/lib/ticket.ts`. A new feature (e.g. "project") would add `project.ts` to each existing lib, re-exported from its `index.ts` — not a new top-level lib.

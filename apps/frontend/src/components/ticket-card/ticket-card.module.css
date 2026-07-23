@@ -8,6 +8,7 @@
   border-radius: var(--radius-md);
   padding: var(--space-4);
   box-shadow: var(--shadow-sm);
+  cursor: grab;
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -16,6 +17,23 @@
 .card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+.card:focus-within {
+  z-index: 1;
+}
+
+.dragging {
+  cursor: grabbing;
+  opacity: 0.6;
+  box-shadow: var(--shadow-md);
+}
+
+.overlay {
+  cursor: grabbing;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
 }
 
 .tape {
@@ -34,6 +52,13 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-2);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
 
 .title {
@@ -86,7 +111,7 @@
   background-color: var(--color-priority-high);
 }
 
-.status-select {
+.status-trigger {
   font-family: var(--font-body);
   font-size: var(--font-size-sm);
   color: var(--color-ink);
@@ -94,4 +119,8 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: var(--space-1) var(--space-2);
+}
+
+.status-trigger:hover {
+  background-color: var(--color-surface-sunken);
 }
