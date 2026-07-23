@@ -17,6 +17,11 @@
 .card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  z-index: 1;
+}
+
+.card:focus-within {
+  z-index: 1;
 }
 
 .dragging {

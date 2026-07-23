@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
   closestCenter,
   pointerWithin,
@@ -9,6 +10,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import type { CollisionDetection, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { ITicket, TicketStatus } from '@org/types';
 import { TICKET_STATUSES } from '@org/consts';
 import { useTickets } from '../../hooks/use-tickets';
@@ -29,13 +31,16 @@ export function Board() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overStatus, setOverStatus] = useState<TicketStatus | null>(null);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
 
   const isModalOpen = !!(isCreating || editingTicket);
 
   // If the raw pass resolves to a column container (not a card), re-run closestCenter
   // scoped to that column's cards so gaps between cards still resolve precisely.
-  const collisionDetection: CollisionDetection = (args) => {
+  const collisionDetection: CollisionDetection = useCallback((args) => {
     const pointerCollisions = pointerWithin(args);
     const collisions = pointerCollisions.length > 0 ? pointerCollisions : closestCenter(args);
     const firstCollision = collisions[0];
@@ -61,7 +66,7 @@ export function Board() {
     );
     const scopedCollisions = closestCenter({ ...args, droppableContainers: scopedContainers });
     return scopedCollisions.length > 0 ? scopedCollisions : collisions;
-  };
+  }, [tickets]);
 
   const closeModal = () => {
     setIsCreating(false);
