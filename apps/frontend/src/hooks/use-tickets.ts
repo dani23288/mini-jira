@@ -28,6 +28,7 @@ export function useTickets(): IUseTicketsResult {
       description: input.description,
       status,
       priority: input.priority ?? DEFAULT_TICKET_PRIORITY,
+      assigneeId: input.assigneeId,
       rank: getRankForEnd(ranksForStatus(tickets, status)),
       createdAt: new Date().toISOString(),
     };

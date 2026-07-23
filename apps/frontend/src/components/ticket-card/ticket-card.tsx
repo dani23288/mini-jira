@@ -1,6 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { ASSIGNEES, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { Avatar } from '../avatar/avatar';
 import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
 import { getTapeRotation } from './ticket-card.utils';
 import type { ITicketCardOverlayProps, ITicketCardProps } from './ticket-card.types';
@@ -11,6 +12,7 @@ function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCar
     TICKET_PRIORITIES.find((option) => option.value === ticket.priority)?.label ?? ticket.priority;
   const statusLabel =
     TICKET_STATUSES.find((option) => option.value === ticket.status)?.label ?? ticket.status;
+  const assignee = ASSIGNEES.find((option) => option.id === ticket.assigneeId);
 
   return (
     <>
@@ -24,13 +26,24 @@ function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCar
 
       <div className={styles.header}>
         <h3 className={styles.title}>{ticket.title}</h3>
-        <DropdownMenu
-          triggerLabel="Ticket actions"
-          items={[
-            { label: 'Edit', onSelect: onEdit },
-            { label: 'Delete', onSelect: onDelete, variant: 'danger' },
-          ]}
-        />
+        <div className={styles['header-actions']}>
+          {assignee && (
+            // Unicode isolate marks keep a bidirectional name (e.g. Hebrew) from
+            // reordering the surrounding "Assigned to" text — the JSX <bdi> tag can't be
+            // used here since this becomes a plain title/aria-label attribute string.
+            <Avatar
+              initials={assignee.initials}
+              label={`Assigned to ⁨${assignee.name}⁩`}
+            />
+          )}
+          <DropdownMenu
+            triggerLabel="Ticket actions"
+            items={[
+              { label: 'Edit', onSelect: onEdit },
+              { label: 'Delete', onSelect: onDelete, variant: 'danger' },
+            ]}
+          />
+        </div>
       </div>
 
       {ticket.description && <p className={styles.description}>{ticket.description}</p>}

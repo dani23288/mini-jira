@@ -1,12 +1,35 @@
 import type { Active, Over } from '@dnd-kit/core';
-import type { ITicket, TicketStatus } from '@org/types';
+import type { ITicket, TicketPriority, TicketStatus } from '@org/types';
+import { UNASSIGNED_ASSIGNEE_ID } from '@org/consts';
 
-export function filterTicketsByQuery(tickets: ITicket[], query: string): ITicket[] {
-  const normalizedQuery = query.trim().toLowerCase();
-  if (!normalizedQuery) {
-    return tickets;
-  }
-  return tickets.filter((ticket) => ticket.title.toLowerCase().includes(normalizedQuery));
+export interface ITicketFilters {
+  query: string;
+  priorities: TicketPriority[];
+  assigneeIds: string[];
+}
+
+export function filterTickets(tickets: ITicket[], filters: ITicketFilters): ITicket[] {
+  const normalizedQuery = filters.query.trim().toLowerCase();
+
+  return tickets.filter((ticket) => {
+    if (normalizedQuery && !ticket.title.toLowerCase().includes(normalizedQuery)) {
+      return false;
+    }
+    if (filters.priorities.length > 0 && !filters.priorities.includes(ticket.priority)) {
+      return false;
+    }
+    if (filters.assigneeIds.length > 0) {
+      const assigneeValue = ticket.assigneeId ?? UNASSIGNED_ASSIGNEE_ID;
+      if (!filters.assigneeIds.includes(assigneeValue)) {
+        return false;
+      }
+    }
+    return true;
+  });
+}
+
+export function toggleValue<T>(values: T[], value: T): T[] {
+  return values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 }
 
 export function getTicketsByStatus(tickets: ITicket[], status: TicketStatus): ITicket[] {

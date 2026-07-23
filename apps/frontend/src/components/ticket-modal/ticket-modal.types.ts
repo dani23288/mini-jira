@@ -7,6 +7,7 @@ export interface ITicketFormValues {
   description?: string;
   priority: TicketPriority;
   status: TicketStatus;
+  assigneeId?: string;
 }
 
 export interface ITicketModalProps {
