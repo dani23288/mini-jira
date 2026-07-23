@@ -14,6 +14,7 @@ import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { ITicket, TicketStatus } from '@org/types';
 import { TICKET_STATUSES } from '@org/consts';
 import { useTickets } from '../../hooks/use-tickets';
+import { useConfirm } from '../../hooks/use-confirm';
 import { Button } from '../../components/button/button';
 import { SearchBar } from '../../components/search-bar/search-bar';
 import { BoardColumn } from '../../components/board-column/board-column';
@@ -25,6 +26,7 @@ import styles from './board.module.css';
 
 export function Board() {
   const { tickets, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket } = useTickets();
+  const confirm = useConfirm();
   const [editingTicket, setEditingTicket] = useState<ITicket | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -71,6 +73,18 @@ export function Board() {
   const closeModal = () => {
     setIsCreating(false);
     setEditingTicket(null);
+  };
+
+  const handleDeleteTicket = async (ticket: ITicket) => {
+    const confirmed = await confirm({
+      title: 'Delete ticket?',
+      body: `"${ticket.title}" will be permanently deleted.`,
+      confirmLabel: 'Delete',
+      confirmVariant: 'danger',
+    });
+    if (confirmed) {
+      deleteTicket(ticket.id);
+    }
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -150,7 +164,7 @@ export function Board() {
               tickets={getTicketsByStatus(visibleTickets, status.value)}
               isDropTarget={status.value === overStatus}
               onEditTicket={setEditingTicket}
-              onDeleteTicket={(ticket) => deleteTicket(ticket.id)}
+              onDeleteTicket={handleDeleteTicket}
               onStatusChange={(ticket, newStatus) => updateStatus(ticket.id, newStatus)}
             />
           ))}

@@ -30,8 +30,11 @@ Final
 ## Phase 2 (current)
 
 - [x] Drag-and-drop: cross-column status changes and within-column reordering (`@dnd-kit`), backed by a fractional-indexing `rank` field so order survives search filtering. Per-ticket status dropdown kept as the non-drag alternative, now built on the custom `dropdown-menu` component. Manually verified in-browser (cross-column moves, reordering, dropping between the last two cards of a column, dropping into an empty column).
-- Delete confirmation dialog.
+- [x] Delete confirmation dialog: generic `ConfirmDialog` component + imperative `useConfirm()` hook (promise-based, backed by a `ConfirmDialogProvider` mounted at the app root) so any future flow can request a confirmation without prop-drilling. Names the ticket in the body copy, new `danger` `Button` variant for the destructive action, Cancel gets initial focus, Escape/click-outside cancel, focus returns to the "⋯" trigger on close. `useConfirm()`'s promise resolution unit-tested (`use-confirm.spec.tsx`); dialog rendering and board wiring manually verified in-browser.
 - Priority filtering.
 - A separate list/table view (sortable by priority, still filterable by status).
 - Dark mode: palette + toggle (token structure already supports this from phase 1).
 - Real backend: NestJS + GraphQL + MongoDB, swapping `useTickets()`'s internals from mock state to real queries/mutations without changing its call signature.
+
+Follow-ups (not scheduled)
+- `TicketModal` lacks Escape-to-close and focus-return-to-trigger, unlike the newer `ConfirmDialog` (only has click-outside-to-close). Noted during the delete-confirmation-dialog work but left out of scope to keep that change focused.
