@@ -1,4 +1,4 @@
-import { useState, type SubmitEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent, type SubmitEvent } from 'react';
 import type { TicketPriority, TicketStatus } from '@org/types';
 import { ASSIGNEES, DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
 import { Button } from '../button/button';
@@ -18,6 +18,20 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
   const [status, setStatus] = useState<TicketStatus>(initialTicket?.status ?? DEFAULT_TICKET_STATUS);
   const [assigneeId, setAssigneeId] = useState(initialTicket?.assigneeId ?? '');
   const [showTitleError, setShowTitleError] = useState(false);
+  const triggerRef = useRef(document.activeElement as HTMLElement | null);
+
+  useEffect(() => {
+    return () => {
+      triggerRef.current?.focus();
+    };
+  }, []);
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      onClose();
+    }
+  };
 
   const priorityLabel = TICKET_PRIORITIES.find((option) => option.value === priority)?.label ?? priority;
   const statusLabel = TICKET_STATUSES.find((option) => option.value === status)?.label ?? status;
@@ -47,6 +61,7 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
         aria-modal="true"
         aria-labelledby="ticket-modal-title"
         onClick={(event) => event.stopPropagation()}
+        onKeyDown={handleKeyDown}
       >
         <h2 id="ticket-modal-title" className={styles['modal-title']}>
           {TICKET_MODAL_TITLE_BY_MODE[mode]}

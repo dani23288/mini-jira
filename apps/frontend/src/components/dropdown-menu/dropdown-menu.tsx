@@ -80,6 +80,7 @@ export function DropdownMenu({
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Escape') {
       event.preventDefault();
+      event.stopPropagation();
       closeMenu();
       return;
     }

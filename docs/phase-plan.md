@@ -24,9 +24,7 @@ Final
 - [x] Delete confirmation dialog: `ConfirmDialog` + `useConfirm()` hook, reusable app-wide, keyboard/focus handled.
 - [x] Priority + assignee filtering: `assigneeId` on ticket model, filter shelf (`PriorityFilter` + `AssigneeFilter`) AND-combined with search.
 - [x] Dark mode: Light/Dark/System via `useTheme()` hook + `ThemeToggle`, no flash-of-wrong-theme on load.
-
-Follow-ups (not scheduled)
-- `TicketModal` lacks Escape-to-close + focus-return-to-trigger, unlike newer `ConfirmDialog` (only has click-outside-to-close). Noted during delete-confirmation-dialog work, left out of scope to keep that change focused.
+- [x] `TicketModal` Escape-to-close + focus-return-to-trigger, matching `ConfirmDialog`. `DropdownMenu`'s own Escape handler now stops propagation so nested Priority/Status/Assignee dropdowns don't also close the modal.
 
 ## Phase 3 (planned)
 
