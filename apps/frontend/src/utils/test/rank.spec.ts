@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { assignSequentialRanks, getRankForEnd, getRankForIndex } from './rank';
+import { assignSequentialRanks, getRankForEnd, getRankForIndex } from '../rank';
 
 describe('getRankForEnd', () => {
   it('returns a rank when the column is empty', () => {

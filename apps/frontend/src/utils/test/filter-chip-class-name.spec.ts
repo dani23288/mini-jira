@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getFilterChipClassName } from './filter-chip-class-name';
+import { getFilterChipClassName } from '../filter-chip-class-name';
 
 const classes = { chip: 'chip', selected: 'chip-selected', muted: 'chip-muted' };
 

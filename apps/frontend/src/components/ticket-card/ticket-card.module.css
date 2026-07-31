@@ -8,7 +8,6 @@
   border-radius: var(--radius-md);
   padding: var(--space-4);
   box-shadow: var(--shadow-sm);
-  cursor: grab;
   transition:
     transform var(--transition-fast),
     box-shadow var(--transition-fast);
@@ -25,15 +24,32 @@
 }
 
 .dragging {
-  cursor: grabbing;
   opacity: 0.6;
   box-shadow: var(--shadow-md);
 }
 
 .overlay {
-  cursor: grabbing;
   box-shadow: var(--shadow-lg);
   pointer-events: none;
+}
+
+.drag-handle {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-ink-muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
 }
 
 .tape {

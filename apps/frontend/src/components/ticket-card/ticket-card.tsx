@@ -7,7 +7,7 @@ import { getTapeRotation } from './ticket-card.utils';
 import type { ITicketCardOverlayProps, ITicketCardProps } from './ticket-card.types';
 import styles from './ticket-card.module.css';
 
-function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCardProps) {
+function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange, dragHandleProps }: ITicketCardProps) {
   const priorityLabel =
     TICKET_PRIORITIES.find((option) => option.value === ticket.priority)?.label ?? ticket.priority;
   const statusLabel =
@@ -25,6 +25,14 @@ function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCar
       />
 
       <div className={styles.header}>
+        <button
+          type="button"
+          className={styles['drag-handle']}
+          aria-label="Drag to reorder ticket"
+          {...dragHandleProps}
+        >
+          <span aria-hidden="true">⠿</span>
+        </button>
         <h3 className={styles.title}>{ticket.title}</h3>
         <div className={styles['header-actions']}>
           {assignee && (
@@ -83,11 +91,8 @@ export function TicketCard(props: ITicketCardProps) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cardClassName}
-      {...attributes}
-      {...listeners}
-      role="group"
     >
-      <TicketCardBody {...props} />
+      <TicketCardBody {...props} dragHandleProps={{ ...attributes, ...listeners }} />
     </div>
   );
 }
