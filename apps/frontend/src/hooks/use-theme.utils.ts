@@ -1,5 +1,7 @@
 export type ThemePreference = 'light' | 'dark' | 'system';
 
+// Key must match the inline anti-flash script in apps/frontend/index.html — that plain
+// HTML script can't import this constant, so keep both literals in sync by hand.
 const STORAGE_KEY = 'ticket-desk-theme';
 const THEME_CYCLE: Record<ThemePreference, ThemePreference> = {
   light: 'dark',

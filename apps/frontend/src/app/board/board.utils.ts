@@ -35,7 +35,7 @@ export function toggleValue<T>(values: T[], value: T): T[] {
 export function getTicketsByStatus(tickets: ITicket[], status: TicketStatus): ITicket[] {
   return tickets
     .filter((ticket) => ticket.status === status)
-    .sort((a, b) => (a.rank < b.rank ? -1 : a.rank > b.rank ? 1 : 0));
+    .sort((a, b) => a.rank.localeCompare(b.rank));
 }
 
 // Index within `destinationColumnTickets` where a dragged ticket should land: past

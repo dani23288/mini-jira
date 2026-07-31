@@ -31,14 +31,6 @@
 }
 
 .unassigned {
-  align-items: center;
-  justify-content: center;
-  width: 1.75rem;
-  height: 1.75rem;
-  font-family: var(--font-body);
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-bold);
   color: var(--color-ink-muted);
-  background-color: var(--color-surface);
-  border: 1.5px dashed var(--color-border-strong);
+  border-style: dashed;
 }

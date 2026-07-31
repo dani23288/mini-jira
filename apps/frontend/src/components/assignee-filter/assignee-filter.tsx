@@ -29,12 +29,12 @@ export function AssigneeFilter({ assignees, selected, onToggle }: IAssigneeFilte
       })}
       <button
         type="button"
-        className={`${getFilterChipClassName(chipClasses, isUnassignedSelected, hasActiveFilter)} ${styles.unassigned}`}
+        className={getFilterChipClassName(chipClasses, isUnassignedSelected, hasActiveFilter)}
         aria-pressed={isUnassignedSelected}
         aria-label="Unassigned"
         onClick={() => onToggle(UNASSIGNED_ASSIGNEE_ID)}
       >
-        ?
+        <Avatar initials="?" label="Unassigned" className={styles.unassigned} />
       </button>
     </div>
   );
