@@ -53,12 +53,14 @@ export function DropdownMenu({
         setIsOpen(false);
       }
     };
-    const handleScroll = () => setIsOpen(false);
+    const handleDismiss = () => setIsOpen(false);
     document.addEventListener('mousedown', handleClickOutside);
-    window.addEventListener('scroll', handleScroll, true);
+    window.addEventListener('scroll', handleDismiss, true);
+    window.addEventListener('resize', handleDismiss);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
-      window.removeEventListener('scroll', handleScroll, true);
+      window.removeEventListener('scroll', handleDismiss, true);
+      window.removeEventListener('resize', handleDismiss);
     };
   }, [isOpen]);
 

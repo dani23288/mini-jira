@@ -85,6 +85,7 @@ export function TicketCard(props: ITicketCardProps) {
       className={cardClassName}
       {...attributes}
       {...listeners}
+      role="group"
     >
       <TicketCardBody {...props} />
     </div>
@@ -93,7 +94,9 @@ export function TicketCard(props: ITicketCardProps) {
 
 export function TicketCardOverlay({ ticket }: ITicketCardOverlayProps) {
   return (
-    <div className={`${styles.card} ${styles.overlay}`} aria-hidden="true">
+    // inert also strips focusability from the nested menu/status buttons, so aria-hidden
+    // content can't be Tab-reached mid-drag.
+    <div className={`${styles.card} ${styles.overlay}`} aria-hidden="true" inert>
       <TicketCardBody ticket={ticket} onEdit={() => {}} onDelete={() => {}} onStatusChange={() => {}} />
     </div>
   );
