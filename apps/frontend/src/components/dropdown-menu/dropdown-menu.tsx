@@ -78,9 +78,13 @@ export function DropdownMenu({
   };
 
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    // Portaled to <body>, so DOM-wise this menu isn't inside the trigger's ancestors — but
+    // React still bubbles synthetic events through the component tree, not the DOM tree. Stop
+    // here unconditionally so keys reaching a menu item (e.g. Enter/Space to select) can't also
+    // hit an ancestor's own keydown handler (e.g. a draggable card's keyboard-drag activator).
+    event.stopPropagation();
     if (event.key === 'Escape') {
       event.preventDefault();
-      event.stopPropagation();
       closeMenu();
       return;
     }
@@ -113,6 +117,7 @@ export function DropdownMenu({
         aria-haspopup="true"
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
+        onKeyDown={(event) => event.stopPropagation()}
       >
         {triggerContent}
       </button>
