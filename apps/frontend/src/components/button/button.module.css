@@ -5,9 +5,7 @@
   border: none;
   border-radius: var(--radius-sm);
   padding: var(--space-2) var(--space-5);
-  transition:
-    background-color var(--transition-fast),
-    transform var(--transition-fast);
+  transition: transform var(--transition-fast);
 }
 
 .button-primary {

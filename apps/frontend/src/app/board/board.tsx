@@ -16,6 +16,7 @@ import { ASSIGNEES, TICKET_STATUSES } from '@org/consts';
 import { useTickets } from '../../hooks/use-tickets';
 import { useConfirm } from '../../hooks/use-confirm';
 import { Button } from '../../components/button/button';
+import { ThemeToggle } from '../../components/theme-toggle/theme-toggle';
 import { SearchBar } from '../../components/search-bar/search-bar';
 import { PriorityFilter } from '../../components/priority-filter/priority-filter';
 import { AssigneeFilter } from '../../components/assignee-filter/assignee-filter';
@@ -154,7 +155,10 @@ export function Board() {
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>Ticket Desk</h1>
-        <Button onClick={() => setIsCreating(true)}>+ New ticket</Button>
+        <div className={styles['header-actions']}>
+          <ThemeToggle />
+          <Button onClick={() => setIsCreating(true)}>+ New ticket</Button>
+        </div>
       </header>
 
       <div className={styles['filter-shelf']}>

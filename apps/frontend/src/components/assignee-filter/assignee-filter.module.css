@@ -13,8 +13,7 @@
   opacity: 0.85;
   transition:
     opacity var(--transition-fast),
-    transform var(--transition-fast),
-    background-color var(--transition-fast);
+    transform var(--transition-fast);
 }
 
 .chip:hover {

@@ -11,7 +11,6 @@
   color: var(--color-ink-muted);
   padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-sm);
-  transition: background-color var(--transition-fast);
 }
 
 .menu-trigger:hover {
@@ -43,7 +42,6 @@
   font-size: var(--font-size-sm);
   padding: var(--space-2);
   border-radius: var(--radius-sm);
-  transition: background-color var(--transition-fast);
 }
 
 .menu-item-check {
