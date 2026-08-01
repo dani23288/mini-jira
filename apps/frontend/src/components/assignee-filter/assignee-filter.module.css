@@ -1,0 +1,36 @@
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.chip {
+  display: inline-flex;
+  padding: 0.1875rem;
+  border: none;
+  background: none;
+  border-radius: var(--radius-pill);
+  opacity: 0.85;
+  transition:
+    opacity var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.chip-selected {
+  opacity: 1;
+  background-color: var(--color-primary-soft);
+}
+
+.chip-muted {
+  opacity: 0.45;
+}
+
+.unassigned {
+  color: var(--color-ink-muted);
+  border-style: dashed;
+}

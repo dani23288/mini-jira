@@ -1,37 +1,33 @@
 # Ticket Desk — Frontend Plan
 
-## Phase 1 (current)
+## Phase 1 (done)
 
 Data layer
-- [x] Shared libs: `packages/shared/types` (`ITicket`, `TicketStatus`, `TicketPriority`, `ICreateTicketInput`, `IUpdateTicketInput`, `IUseTicketsResult`) and `packages/shared/consts` (`TICKET_STATUSES`, `TICKET_PRIORITIES`, defaults).
-- [x] Design tokens: CSS custom properties for pastel-pink theme (colors, spacing, typography) in `apps/frontend/src/styles/`.
-- [x] Mock ticket data set (`apps/frontend/src/data/mock-tickets.ts`).
-- [x] `useTickets()` hook (in-memory, implements `IUseTicketsResult`; resets on refresh, no persistence).
+- [x] Shared libs (`packages/shared/types`, `packages/shared/consts`) + design tokens for pastel-pink theme.
+- [x] Mock ticket data + `useTickets()` hook (in-memory, no persistence).
 
 Board & components
-- [x] Board layout: columns from `TICKET_STATUSES` config, fluid flex/grid (resize-safe, no dedicated mobile pass).
-- [x] `TicketCard`: title, priority badge, description snippet, washi-tape priority accent.
-- [x] Card "⋯" menu: Edit, Delete (red). Delete is immediate (no confirmation yet).
-- [x] Per-ticket status control (dropdown) — built so a drag-and-drop wrapper can be added later without restructuring.
-- [x] Create/Edit modal (shared component). Only `title` required; `description` optional; `priority` defaults to Medium; `status` defaults to first column.
+- [x] Board layout, `TicketCard`, "⋯" menu (Edit/Delete), per-ticket status dropdown, Create/Edit modal — all built.
 
 Wiring
-- [x] Wire Board + TicketCard to `useTickets()`.
-- [x] Wire menu Edit → modal (pre-filled) / Delete → `deleteTicket`.
-- [x] Wire status control → `updateStatus`.
-- [x] Wire modal submit → `createTicket` / `updateTicket`.
+- [x] Board, cards, menu, status control, modal all wired to `useTickets()`.
 
 Search
-- [x] Search bar above board, filters cards by title.
+- [x] Search bar filters cards by title.
 
 Final
-- [x] Manual QA pass: create, edit, delete, status change, and search all verified working in-browser. Window-resize behavior relies on standard `flex-wrap` CSS (not visually re-verified at a narrow viewport due to a browser-automation tool limitation in this session). No automated tests in phase 1.
+- [x] Manual QA pass done, no automated tests phase 1.
 
-## Phase 2 ideas (not yet scheduled)
+## Phase 2 (done)
 
-- Drag-and-drop status changes (layered on top of the existing per-ticket control, same `updateStatus` call).
-- Delete confirmation dialog.
-- Priority filtering.
-- A separate list/table view (sortable by priority, still filterable by status).
-- Dark mode: palette + toggle (token structure already supports this from phase 1).
-- Real backend: NestJS + GraphQL + MongoDB, swapping `useTickets()`'s internals from mock state to real queries/mutations without changing its call signature.
+- [x] Drag-and-drop: cross-column + within-column reordering (`@dnd-kit`), fractional `rank` field, status dropdown kept as non-drag alternative.
+- [x] Delete confirmation dialog: `ConfirmDialog` + `useConfirm()` hook, reusable app-wide, keyboard/focus handled.
+- [x] Priority + assignee filtering: `assigneeId` on ticket model, filter shelf (`PriorityFilter` + `AssigneeFilter`) AND-combined with search.
+- [x] Dark mode: Light/Dark/System via `useTheme()` hook + `ThemeToggle`, no flash-of-wrong-theme on load.
+- [x] `TicketModal` Escape-to-close + focus-return-to-trigger, matching `ConfirmDialog`. `DropdownMenu`'s own Escape handler now stops propagation so nested Priority/Status/Assignee dropdowns don't also close the modal.
+- [x] PR #2 review pass: all 22 review threads resolved (rank-sort comparator, theme-key drift comment, `AssigneeFilter` reusing `Avatar`).
+
+## Phase 3 (current)
+
+- Separate list/table view (sortable by priority, still filterable by status).
+- Real backend: NestJS + GraphQL + MongoDB, swap `useTickets()`'s internals from mock state to real queries/mutations, no change to call signature.

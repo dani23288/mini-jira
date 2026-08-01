@@ -1,7 +1,12 @@
+import { ConfirmDialogProvider } from '../hooks/use-confirm';
 import { Board } from './board/board';
 
 export function App() {
-  return <Board />;
+  return (
+    <ConfirmDialogProvider>
+      <Board />
+    </ConfirmDialogProvider>
+  );
 }
 
 export default App;
