@@ -25,9 +25,7 @@ export function DropdownMenu({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // The trigger can sit inside a scrollable ancestor (e.g. the ticket modal), which
-  // would clip an absolutely-positioned menu. Portal to <body> and position it with
-  // fixed, viewport-relative coordinates so it always floats above its container.
+  // Portals to <body> with fixed coords so a scrollable ancestor (e.g. the ticket modal) can't clip the menu.
   useLayoutEffect(() => {
     if (!isOpen || !triggerRef.current) {
       return;
@@ -78,10 +76,7 @@ export function DropdownMenu({
   };
 
   const handleMenuKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    // Portaled to <body>, so DOM-wise this menu isn't inside the trigger's ancestors — but
-    // React still bubbles synthetic events through the component tree, not the DOM tree. Stop
-    // here unconditionally so keys reaching a menu item (e.g. Enter/Space to select) can't also
-    // hit an ancestor's own keydown handler (e.g. a draggable card's keyboard-drag activator).
+    // Stop synthetic bubbling from the portaled menu so keys don't also fire an ancestor's handler (e.g. a card's drag activator).
     event.stopPropagation();
     if (event.key === 'Escape') {
       event.preventDefault();
@@ -128,12 +123,7 @@ export function DropdownMenu({
             className={styles.menu}
             role="menu"
             ref={menuRef}
-            style={{
-              top: menuPosition.top,
-              left: menuPosition.left,
-              right: menuPosition.right,
-              width: menuPosition.width,
-            }}
+            style={{ ...menuPosition }}
             onKeyDown={handleMenuKeyDown}
           >
             {items.map((item) => (

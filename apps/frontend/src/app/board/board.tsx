@@ -1,15 +1,6 @@
 import { useCallback, useState } from 'react';
-import {
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  pointerWithin,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core';
-import type { CollisionDetection, DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragOverlay, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { ITicket, TicketPriority, TicketStatus } from '@org/types';
 import { ASSIGNEES, TICKET_STATUSES } from '@org/consts';
@@ -21,10 +12,23 @@ import { SearchBar } from '../../components/search-bar/search-bar';
 import { PriorityFilter } from '../../components/priority-filter/priority-filter';
 import { AssigneeFilter } from '../../components/assignee-filter/assignee-filter';
 import { BoardColumn } from '../../components/board-column/board-column';
-import { TicketCardOverlay } from '../../components/ticket-card/ticket-card';
+import { TicketCardOverlay } from '../../components/ticket-card/ticket-card-overlay';
 import { TicketModal } from '../../components/ticket-modal/ticket-modal';
 import { getRankForIndex } from '../../utils/rank';
-import { filterTickets, getDropInsertIndex, getTicketsByStatus, toggleValue } from './board.utils';
+import {
+  DELETE_TICKET_CONFIRM_LABEL,
+  DELETE_TICKET_CONFIRM_TITLE,
+  DELETE_TICKET_CONFIRM_VARIANT,
+  getDeleteTicketConfirmBody,
+} from './board.consts';
+import {
+  filterTickets,
+  findTicketById,
+  getBoardCollisionDetection,
+  getDropInsertIndex,
+  getTicketsByStatus,
+  toggleValue,
+} from './board.utils';
 import styles from './board.module.css';
 
 export function Board() {
@@ -45,35 +49,7 @@ export function Board() {
 
   const isModalOpen = !!(isCreating || editingTicket);
 
-  // If the raw pass resolves to a column container (not a card), re-run closestCenter
-  // scoped to that column's cards so gaps between cards still resolve precisely.
-  const collisionDetection: CollisionDetection = useCallback((args) => {
-    const pointerCollisions = pointerWithin(args);
-    const collisions = pointerCollisions.length > 0 ? pointerCollisions : closestCenter(args);
-    const firstCollision = collisions[0];
-    if (!firstCollision) {
-      return collisions;
-    }
-
-    const overId = String(firstCollision.id);
-    const isTicketMatch = tickets.some((ticket) => ticket.id === overId);
-    if (isTicketMatch) {
-      return collisions;
-    }
-
-    const columnTicketIds = new Set(
-      tickets.filter((ticket) => ticket.status === (overId as TicketStatus)).map((ticket) => ticket.id),
-    );
-    if (columnTicketIds.size === 0) {
-      return collisions;
-    }
-
-    const scopedContainers = args.droppableContainers.filter((container) =>
-      columnTicketIds.has(String(container.id)),
-    );
-    const scopedCollisions = closestCenter({ ...args, droppableContainers: scopedContainers });
-    return scopedCollisions.length > 0 ? scopedCollisions : collisions;
-  }, [tickets]);
+  const collisionDetection = useCallback(getBoardCollisionDetection(tickets), [tickets]);
 
   const closeModal = () => {
     setIsCreating(false);
@@ -90,10 +66,10 @@ export function Board() {
 
   const handleDeleteTicket = async (ticket: ITicket) => {
     const confirmed = await confirm({
-      title: 'Delete ticket?',
-      body: `"${ticket.title}" will be permanently deleted.`,
-      confirmLabel: 'Delete',
-      confirmVariant: 'danger',
+      title: DELETE_TICKET_CONFIRM_TITLE,
+      body: getDeleteTicketConfirmBody(ticket.title),
+      confirmLabel: DELETE_TICKET_CONFIRM_LABEL,
+      confirmVariant: DELETE_TICKET_CONFIRM_VARIANT,
     });
     if (confirmed) {
       deleteTicket(ticket.id);
@@ -111,7 +87,7 @@ export function Board() {
       return;
     }
     const overId = String(over.id);
-    const overTicket = tickets.find((ticket) => ticket.id === overId);
+    const overTicket = findTicketById(tickets, overId);
     setOverStatus(overTicket ? overTicket.status : (overId as TicketStatus));
   };
 
@@ -125,8 +101,8 @@ export function Board() {
 
     const activeId = String(active.id);
     const overId = String(over.id);
-    const activeTicket = tickets.find((ticket) => ticket.id === activeId);
-    const overTicket = tickets.find((ticket) => ticket.id === overId);
+    const activeTicket = findTicketById(tickets, activeId);
+    const overTicket = findTicketById(tickets, overId);
     if (!activeTicket) {
       return;
     }
@@ -149,7 +125,7 @@ export function Board() {
     priorities: selectedPriorities,
     assigneeIds: selectedAssigneeIds,
   });
-  const activeTicket = activeId ? tickets.find((ticket) => ticket.id === activeId) ?? null : null;
+  const activeTicket = activeId ? findTicketById(tickets, activeId) ?? null : null;
 
   return (
     <div className={styles.page}>

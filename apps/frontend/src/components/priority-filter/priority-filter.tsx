@@ -1,5 +1,6 @@
 import { TICKET_PRIORITIES } from '@org/consts';
 import { getFilterChipClassName } from '../../utils/filter-chip-class-name';
+import { getPriorityColorVar } from '../../utils/priority-color';
 import type { IPriorityFilterProps } from './priority-filter.types';
 import styles from './priority-filter.module.css';
 
@@ -18,7 +19,7 @@ export function PriorityFilter({ selected, onToggle }: IPriorityFilterProps) {
             key={option.value}
             type="button"
             className={getFilterChipClassName(chipClasses, isSelected, hasActiveFilter)}
-            style={{ backgroundColor: `var(--color-priority-${option.value})` }}
+            style={{ backgroundColor: getPriorityColorVar(option.value) }}
             aria-pressed={isSelected}
             onClick={() => onToggle(option.value)}
           >

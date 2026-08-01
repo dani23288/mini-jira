@@ -1,6 +1,8 @@
 .column {
-  flex: 1 1 260px;
-  min-width: 260px;
+  --column-min-width: 260px;
+
+  flex: 1 1 var(--column-min-width);
+  min-width: var(--column-min-width);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
