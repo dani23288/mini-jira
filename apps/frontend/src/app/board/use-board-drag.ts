@@ -9,7 +9,7 @@ import {
   getBoardCollisionDetection,
   getDropInsertIndex,
   getTicketsByStatus,
-  isTicketStatus,
+  resolveDestinationStatus,
 } from './board.utils';
 
 export function useBoardDrag(tickets: ITicket[], moveTicket: IUseTicketsResult['moveTicket']) {
@@ -33,9 +33,7 @@ export function useBoardDrag(tickets: ITicket[], moveTicket: IUseTicketsResult['
       setOverStatus(null);
       return;
     }
-    const overId = String(over.id);
-    const overTicket = findTicketById(tickets, overId);
-    const destinationStatus = overTicket?.status ?? (isTicketStatus(overId) ? overId : null);
+    const destinationStatus = resolveDestinationStatus(tickets, String(over.id));
     if (!destinationStatus) {
       setOverStatus(null);
       return;
@@ -74,7 +72,7 @@ export function useBoardDrag(tickets: ITicket[], moveTicket: IUseTicketsResult['
     if (!activeTicket) {
       return;
     }
-    const destinationStatus = overTicket?.status ?? (isTicketStatus(overId) ? overId : null);
+    const destinationStatus = resolveDestinationStatus(tickets, overId);
     if (!destinationStatus) {
       return;
     }

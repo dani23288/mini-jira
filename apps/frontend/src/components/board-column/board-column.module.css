@@ -1,5 +1,5 @@
 .column {
-  --column-min-width: 260px;
+  --column-min-width: 16.25rem;
 
   flex: 1 1 var(--column-min-width);
   min-width: var(--column-min-width);

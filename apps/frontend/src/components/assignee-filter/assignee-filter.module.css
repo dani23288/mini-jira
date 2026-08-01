@@ -6,7 +6,7 @@
 
 .chip {
   display: inline-flex;
-  padding: 3px;
+  padding: 0.1875rem;
   border: none;
   background: none;
   border-radius: var(--radius-pill);

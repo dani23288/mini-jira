@@ -45,7 +45,7 @@
   left: var(--space-4);
   width: 3.5rem;
   height: 1.1rem;
-  border-radius: 2px;
+  border-radius: 0.125rem;
   opacity: 0.85;
   box-shadow: var(--shadow-sm);
 }

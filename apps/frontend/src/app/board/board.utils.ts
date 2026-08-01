@@ -43,6 +43,11 @@ export function isTicketStatus(value: string): value is TicketStatus {
   return TICKET_STATUSES.some((status) => status.value === value);
 }
 
+export function resolveDestinationStatus(tickets: ITicket[], overId: string): TicketStatus | null {
+  const overTicket = findTicketById(tickets, overId);
+  return overTicket?.status ?? (isTicketStatus(overId) ? overId : null);
+}
+
 export function getTicketsByStatus(tickets: ITicket[], status: TicketStatus): ITicket[] {
   return tickets
     .filter((ticket) => ticket.status === status)
@@ -79,10 +84,7 @@ export function getBoardCollisionDetection(tickets: ITicket[]): CollisionDetecti
     }
 
     const overId = String(firstCollision.id);
-    if (findTicketById(tickets, overId)) {
-      return collisions;
-    }
-    if (!isTicketStatus(overId)) {
+    if (findTicketById(tickets, overId) || !isTicketStatus(overId)) {
       return collisions;
     }
 
