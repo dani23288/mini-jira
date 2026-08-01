@@ -12,6 +12,7 @@ export function ConfirmDialogProvider({ children }: { children: ReactNode }) {
   const triggerRef = useRef<HTMLElement | null>(null);
 
   const confirm = useCallback<ConfirmFn>((options) => {
+    resolveRef.current?.(false);
     triggerRef.current = document.activeElement as HTMLElement | null;
     setRequest(options);
     return new Promise<boolean>((resolve) => {

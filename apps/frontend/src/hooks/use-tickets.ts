@@ -14,26 +14,27 @@ function ranksForStatus(tickets: ITicket[], status: TicketStatus, excludeId?: st
   return tickets
     .filter((ticket) => ticket.status === status && ticket.id !== excludeId)
     .map((ticket) => ticket.rank)
-    .sort();
+    .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
 export function useTickets(): IUseTicketsResult {
   const [tickets, setTickets] = useState<ITicket[]>(createMockTickets);
 
-  const createTicket = (input: ICreateTicketInput): ITicket => {
-    const status = input.status ?? DEFAULT_TICKET_STATUS;
-    const ticket: ITicket = {
-      id: crypto.randomUUID(),
-      title: input.title,
-      description: input.description,
-      status,
-      priority: input.priority ?? DEFAULT_TICKET_PRIORITY,
-      assigneeId: input.assigneeId,
-      rank: getRankForEnd(ranksForStatus(tickets, status)),
-      createdAt: new Date().toISOString(),
-    };
-    setTickets((prev) => [...prev, ticket]);
-    return ticket;
+  const createTicket = (input: ICreateTicketInput): void => {
+    setTickets((prev) => {
+      const status = input.status ?? DEFAULT_TICKET_STATUS;
+      const ticket: ITicket = {
+        id: crypto.randomUUID(),
+        title: input.title,
+        description: input.description,
+        status,
+        priority: input.priority ?? DEFAULT_TICKET_PRIORITY,
+        assigneeId: input.assigneeId,
+        rank: getRankForEnd(ranksForStatus(prev, status)),
+        createdAt: new Date().toISOString(),
+      };
+      return [...prev, ticket];
+    });
   };
 
   const updateTicket = (id: string, changes: IUpdateTicketInput): void => {

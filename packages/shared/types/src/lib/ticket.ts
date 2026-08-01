@@ -31,7 +31,7 @@ export interface IUpdateTicketInput {
 
 export interface IUseTicketsResult {
   tickets: ITicket[];
-  createTicket(input: ICreateTicketInput): ITicket;
+  createTicket(input: ICreateTicketInput): void;
   updateTicket(id: string, changes: IUpdateTicketInput): void;
   updateStatus(id: string, status: TicketStatus): void;
   moveTicket(id: string, status: TicketStatus, rank: string): void;
