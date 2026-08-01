@@ -3,7 +3,7 @@ import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { ITicket, IUseTicketsResult, TicketStatus } from '@org/types';
-import { getRankForIndex } from '../../utils/rank';
+import { getRankForEnd, getRankForIndex } from '../../utils/rank';
 import {
   findTicketById,
   getBoardCollisionDetection,
@@ -28,22 +28,35 @@ export function useBoardDrag(tickets: ITicket[], moveTicket: IUseTicketsResult['
   };
 
   const handleDragOver = (event: DragOverEvent) => {
-    const { over } = event;
+    const { active, over } = event;
     if (!over) {
       setOverStatus(null);
       return;
     }
     const overId = String(over.id);
     const overTicket = findTicketById(tickets, overId);
-    if (overTicket) {
-      setOverStatus(overTicket.status);
-      return;
-    }
-    if (!isTicketStatus(overId)) {
+    const destinationStatus = overTicket?.status ?? (isTicketStatus(overId) ? overId : null);
+    if (!destinationStatus) {
       setOverStatus(null);
       return;
     }
-    setOverStatus(overId);
+    setOverStatus(destinationStatus);
+
+    // Move the dragged ticket into the destination column's SortableContext as soon as we cross
+    // into it. Otherwise its id is missing from that column's items list, so dnd-kit's sorting
+    // strategy computes sibling positions against an activeIndex of -1 and their measured rects
+    // go bad — which then throws off the before/after neighbors picked on drop.
+    const draggedId = String(active.id);
+    const activeTicket = findTicketById(tickets, draggedId);
+    if (!activeTicket || activeTicket.status === destinationStatus) {
+      return;
+    }
+    const rank = getRankForEnd(
+      getTicketsByStatus(tickets, destinationStatus)
+        .filter((ticket) => ticket.id !== draggedId)
+        .map((ticket) => ticket.rank),
+    );
+    moveTicket(draggedId, destinationStatus, rank);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
