@@ -1,7 +1,7 @@
 import type { Active, CollisionDetection, Over } from '@dnd-kit/core';
 import { closestCenter, pointerWithin } from '@dnd-kit/core';
 import type { ITicket, TicketPriority, TicketStatus } from '@org/types';
-import { UNASSIGNED_ASSIGNEE_ID } from '@org/consts';
+import { TICKET_STATUSES, UNASSIGNED_ASSIGNEE_ID } from '@org/consts';
 
 export interface ITicketFilters {
   query: string;
@@ -39,15 +39,17 @@ export function findTicketById(tickets: ITicket[], id: string): ITicket | undefi
   return tickets.find((ticket) => ticket.id === id);
 }
 
+export function isTicketStatus(value: string): value is TicketStatus {
+  return TICKET_STATUSES.some((status) => status.value === value);
+}
+
 export function getTicketsByStatus(tickets: ITicket[], status: TicketStatus): ITicket[] {
   return tickets
     .filter((ticket) => ticket.status === status)
     .sort((a, b) => (a.rank < b.rank ? -1 : a.rank > b.rank ? 1 : 0));
 }
 
-// Index within `destinationColumnTickets` where a dragged ticket should land: past
-// the end when dropped on the column itself, otherwise before/after `overTicket`
-// depending on which half of it the pointer is over.
+// Past the end when dropped on the column itself, else before/after `overTicket` by pointer half.
 export function getDropInsertIndex(
   destinationColumnTickets: ITicket[],
   overTicket: ITicket | undefined,
@@ -66,9 +68,7 @@ export function getDropInsertIndex(
   return isPastOverCenter ? overIndex + 1 : overIndex;
 }
 
-// A raw pointer/center pass can resolve to a column container instead of a card; when
-// that happens, re-run closestCenter scoped to that column's cards so gaps between
-// cards still resolve precisely.
+// A column-container hit (not a card) re-runs closestCenter scoped to that column's cards for precision.
 export function getBoardCollisionDetection(tickets: ITicket[]): CollisionDetection {
   return (args) => {
     const pointerCollisions = pointerWithin(args);
@@ -82,9 +82,12 @@ export function getBoardCollisionDetection(tickets: ITicket[]): CollisionDetecti
     if (findTicketById(tickets, overId)) {
       return collisions;
     }
+    if (!isTicketStatus(overId)) {
+      return collisions;
+    }
 
     const columnTicketIds = new Set(
-      tickets.filter((ticket) => ticket.status === (overId as TicketStatus)).map((ticket) => ticket.id),
+      tickets.filter((ticket) => ticket.status === overId).map((ticket) => ticket.id),
     );
     if (columnTicketIds.size === 0) {
       return collisions;
