@@ -1,6 +1,6 @@
 export type ThemePreference = 'light' | 'dark' | 'system';
 
-const STORAGE_KEY = 'ticket-desk-theme';
+export const STORAGE_KEY = 'ticket-desk-theme';
 const THEME_CYCLE: Record<ThemePreference, ThemePreference> = {
   light: 'dark',
   dark: 'system',

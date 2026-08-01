@@ -8,8 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <script>
-      // Key must match STORAGE_KEY in src/hooks/use-theme.utils.ts — plain HTML script
-      // can't import it, so keep both literals in sync by hand.
+      // Key must match STORAGE_KEY in use-theme.utils.ts, kept in sync by hand.
       (function () {
         var stored = localStorage.getItem('ticket-desk-theme');
         if (stored === 'light' || stored === 'dark') {
