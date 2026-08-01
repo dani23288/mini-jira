@@ -35,6 +35,21 @@ export const toggleValueCases = [
   { name: 'removes the value when already present', values: ['low', 'high'], value: 'low', expected: ['high'] },
 ];
 
+export const getTicketsByStatusCases = [
+  {
+    name: 'sorts by rank using codepoint order, not localeCompare',
+    tickets: [makeTicket('a', { rank: 'a' }), makeTicket('b', { rank: 'A' })],
+    status: 'todo' as const,
+    expectedIds: ['b', 'a'],
+  },
+  {
+    name: 'excludes tickets from other statuses',
+    tickets: [makeTicket('a', { status: 'todo', rank: 'a' }), makeTicket('b', { status: 'done', rank: 'b' })],
+    status: 'todo' as const,
+    expectedIds: ['a'],
+  },
+];
+
 export const filterTicketsCases: { name: string; filters: Partial<ITicketFilters>; expectedIds: string[] }[] = [
   { name: 'returns every ticket when no filters are active', filters: {}, expectedIds: ['a', 'b', 'c'] },
   { name: 'filters by title, case-insensitively', filters: { query: 'LOGIN' }, expectedIds: ['a'] },

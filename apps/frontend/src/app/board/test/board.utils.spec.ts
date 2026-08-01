@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { filterTickets, getDropInsertIndex, toggleValue } from '../board.utils';
+import { filterTickets, getDropInsertIndex, getTicketsByStatus, toggleValue } from '../board.utils';
 import { makeActive, makeOver, makeTicket } from './stubs/board.utils.stub';
 import {
   dropInsertColumnTickets,
   filterTicketsCases,
   getDropInsertIndexCases,
+  getTicketsByStatusCases,
   toggleValueCases,
 } from './stubs/board.utils.cases';
 
@@ -21,6 +22,13 @@ describe('getDropInsertIndex', () => {
       expect(result).toBe(expected);
     },
   );
+});
+
+describe('getTicketsByStatus', () => {
+  it.each(getTicketsByStatusCases)('$name', ({ tickets, status, expectedIds }) => {
+    const result = getTicketsByStatus(tickets, status);
+    expect(result.map((ticket) => ticket.id)).toEqual(expectedIds);
+  });
 });
 
 describe('toggleValue', () => {
