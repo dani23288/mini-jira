@@ -1,25 +1,7 @@
-.overlay {
-  position: fixed;
-  inset: 0;
-  background-color: var(--color-overlay);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: var(--space-4);
-  z-index: 100;
-}
-
-.modal {
-  width: 100%;
+.dialog {
   max-width: 28rem;
   max-height: 90vh;
   overflow-y: auto;
-  background-color: var(--color-surface);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
-  padding: var(--space-6);
-  display: flex;
-  flex-direction: column;
   gap: var(--space-4);
 }
 
@@ -51,8 +33,7 @@
 }
 
 .input,
-.textarea,
-.field-trigger {
+.textarea {
   font-family: var(--font-body);
   font-size: var(--font-size-base);
   color: var(--color-ink);
@@ -65,18 +46,6 @@
 .textarea {
   resize: vertical;
   min-height: 4.5rem;
-}
-
-.field-trigger {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.field-trigger:hover {
-  background-color: var(--color-surface-sunken);
 }
 
 .error-text {

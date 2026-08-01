@@ -1,5 +1,6 @@
-import { ASSIGNEES, TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { TICKET_STATUSES } from '@org/consts';
 import { getPriorityColorVar } from '../../utils/priority-color';
+import { findAssignee, getPriorityLabel, getStatusLabel } from '../../utils/ticket-labels';
 import { Avatar } from '../avatar/avatar';
 import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
 import { getTapeRotation } from './ticket-card.utils';
@@ -7,11 +8,9 @@ import type { ITicketCardProps } from './ticket-card.types';
 import styles from './ticket-card.module.css';
 
 export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCardProps) {
-  const priorityLabel =
-    TICKET_PRIORITIES.find((option) => option.value === ticket.priority)?.label ?? ticket.priority;
-  const statusLabel =
-    TICKET_STATUSES.find((option) => option.value === ticket.status)?.label ?? ticket.status;
-  const assignee = ASSIGNEES.find((option) => option.id === ticket.assigneeId);
+  const priorityLabel = getPriorityLabel(ticket.priority);
+  const statusLabel = getStatusLabel(ticket.status);
+  const assignee = findAssignee(ticket.assigneeId);
 
   return (
     <>
@@ -30,8 +29,8 @@ export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITi
           <DropdownMenu
             triggerLabel="Ticket actions"
             items={[
-              { label: 'Edit', onSelect: onEdit },
-              { label: 'Delete', onSelect: onDelete, variant: 'danger' },
+              { label: 'Edit', onSelect: () => onEdit?.() },
+              { label: 'Delete', onSelect: () => onDelete?.(), variant: 'danger' },
             ]}
           />
         </div>
@@ -53,7 +52,7 @@ export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITi
           }
           items={TICKET_STATUSES.map((option) => ({
             label: option.label,
-            onSelect: () => onStatusChange(option.value),
+            onSelect: () => onStatusChange?.(option.value),
             isActive: option.value === ticket.status,
           }))}
         />
