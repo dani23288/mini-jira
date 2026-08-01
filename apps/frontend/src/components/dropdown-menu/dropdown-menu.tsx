@@ -123,7 +123,7 @@ export function DropdownMenu({
             className={styles.menu}
             role="menu"
             ref={menuRef}
-            style={{ ...menuPosition }}
+            style={menuPosition}
             onKeyDown={handleMenuKeyDown}
           >
             {items.map((item) => (
