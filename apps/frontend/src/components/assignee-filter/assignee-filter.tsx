@@ -5,15 +5,16 @@ import type { IAssigneeFilterProps } from './assignee-filter.types';
 import styles from './assignee-filter.module.css';
 
 const chipClasses = { chip: styles.chip, selected: styles['chip-selected'], muted: styles['chip-muted'] };
+const UNASSIGNED_CHIP = { id: UNASSIGNED_ASSIGNEE_ID, name: 'Unassigned', initials: '?' };
 
 export function AssigneeFilter({ assignees, selected, onToggle }: IAssigneeFilterProps) {
   const hasActiveFilter = selected.length > 0;
-  const isUnassignedSelected = selected.includes(UNASSIGNED_ASSIGNEE_ID);
 
   return (
     <div className={styles.group} role="group" aria-label="Filter by assignee">
-      {assignees.map((assignee) => {
+      {[...assignees, UNASSIGNED_CHIP].map((assignee) => {
         const isSelected = selected.includes(assignee.id);
+        const isUnassigned = assignee.id === UNASSIGNED_ASSIGNEE_ID;
         return (
           <button
             key={assignee.id}
@@ -23,19 +24,14 @@ export function AssigneeFilter({ assignees, selected, onToggle }: IAssigneeFilte
             aria-label={assignee.name}
             onClick={() => onToggle(assignee.id)}
           >
-            <Avatar initials={assignee.initials} label={assignee.name} />
+            <Avatar
+              initials={assignee.initials}
+              label={assignee.name}
+              className={isUnassigned ? styles.unassigned : undefined}
+            />
           </button>
         );
       })}
-      <button
-        type="button"
-        className={getFilterChipClassName(chipClasses, isUnassignedSelected, hasActiveFilter)}
-        aria-pressed={isUnassignedSelected}
-        aria-label="Unassigned"
-        onClick={() => onToggle(UNASSIGNED_ASSIGNEE_ID)}
-      >
-        <Avatar initials="?" label="Unassigned" className={styles.unassigned} />
-      </button>
     </div>
   );
 }

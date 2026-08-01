@@ -12,8 +12,7 @@ export function getRankForIndex(sortedRanksInColumn: string[], index: number): s
   return generateKeyBetween(before, after);
 }
 
-// Assigns each item a rank placing it at the end of its status column, in input order
-// (so items already grouped/ordered by status keep that relative order within each column).
+// Assigns each item a rank at the end of its status column, preserving input order within each column.
 export function assignSequentialRanks<T extends { status: TicketStatus }>(
   items: T[],
 ): (T & { rank: string })[] {
