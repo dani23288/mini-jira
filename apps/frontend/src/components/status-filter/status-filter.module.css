@@ -3,6 +3,7 @@
   gap: var(--space-2);
 }
 
+/* risk: chip/chip:hover/chip-selected/chip-muted copy-pasted verbatim from priority-filter.module.css. share it, drift risk otherwise. */
 .chip {
   font-family: var(--font-body);
   font-size: var(--font-size-xs);

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { PriorityBadge } from '../priority-badge';
 
 describe('PriorityBadge', () => {
+  // nit: cases inline, not in test/stubs/*.cases.ts. rest of repo does this (filter-chip-class-name, board.utils). move it.
   it.each([
     [1, 'Low', 'low'],
     [2, 'Medium', 'medium'],
