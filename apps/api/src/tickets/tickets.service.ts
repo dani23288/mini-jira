@@ -31,6 +31,11 @@ function sortRanksAscending(ranks: string[]): string[] {
   return ranks.slice().sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
 }
 
+// Neutralizes regex metacharacters in user input so search stays a literal substring match.
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 @Injectable()
 export class TicketsService {
   constructor(@InjectModel(Ticket.name) private readonly ticketModel: Model<TicketDocument>) {}
@@ -47,8 +52,7 @@ export class TicketsService {
       query.assigneeId = filter.assigneeId;
     }
     if (filter.search) {
-      // risk: filter.search goes into $regex unescaped — regex metachars from user input (unbalanced parens, +, etc.) throw invalid-regex errors, and pathological patterns are a ReDoS surface. Escape special chars before building $regex.
-      query.title = { $regex: filter.search, $options: 'i' };
+      query.title = { $regex: escapeRegExp(filter.search), $options: 'i' };
     }
 
     const sortField = filter.sort ?? 'rank';

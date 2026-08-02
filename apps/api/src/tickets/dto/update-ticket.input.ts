@@ -21,8 +21,7 @@ export class UpdateTicketInput implements IUpdateTicketInput {
   @IsIn(TICKET_PRIORITIES.map((option) => option.value))
   priority?: TicketPriority;
 
-  // bug: same union-reflection crash as create-ticket.input.ts — bare @Field() on TicketStatus fails schema build. Needs @Field(() => String).
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   @IsOptional()
   @IsIn(TICKET_STATUSES.map((option) => option.value))
   status?: TicketStatus;
