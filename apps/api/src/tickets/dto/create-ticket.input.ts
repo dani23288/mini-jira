@@ -20,6 +20,7 @@ export class CreateTicketInput implements ICreateTicketInput {
   @IsIn(TICKET_PRIORITIES.map((option) => option.value))
   priority?: TicketPriority;
 
+  // bug: bare @Field() can't reflect a TS string-literal union — design:type comes back Object, GraphQL schema build throws "Undefined type error" on boot. Needs @Field(() => String).
   @Field({ nullable: true })
   @IsOptional()
   @IsIn(TICKET_STATUSES.map((option) => option.value))

@@ -47,6 +47,7 @@ export class TicketsService {
       query.assigneeId = filter.assigneeId;
     }
     if (filter.search) {
+      // risk: filter.search goes into $regex unescaped — regex metachars from user input (unbalanced parens, +, etc.) throw invalid-regex errors, and pathological patterns are a ReDoS surface. Escape special chars before building $regex.
       query.title = { $regex: filter.search, $options: 'i' };
     }
 
@@ -95,6 +96,7 @@ export class TicketsService {
     }
   }
 
+  // nit: read-then-write, no lock — two concurrent creates/status-changes into the same column can compute the same end rank and collide. Fine for single-user practice use, revisit with a unique (status, rank) index if concurrent writers show up.
   private async getEndOfColumnRank(status: TicketStatus): Promise<string> {
     const docs = await this.ticketModel.find({ status }, { rank: 1 }).exec();
     const ranks = sortRanksAscending(docs.map((doc) => doc.rank));

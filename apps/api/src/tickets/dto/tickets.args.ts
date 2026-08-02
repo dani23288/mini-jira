@@ -11,6 +11,7 @@ export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 @ArgsType()
 export class TicketsArgs {
+  // bug: same union-reflection crash — bare @Field() on TicketStatus fails schema build. Needs @Field(() => String). Confirmed by actually booting GraphQLSchemaFactory: throws on this field first.
   @Field({ nullable: true })
   @IsOptional()
   @IsIn(TICKET_STATUSES.map((option) => option.value))
@@ -31,11 +32,13 @@ export class TicketsArgs {
   @IsString()
   search?: string;
 
+  // bug: same union-reflection crash — TicketSortField is a string-literal union, bare @Field() fails schema build. Needs @Field(() => String).
   @Field({ nullable: true })
   @IsOptional()
   @IsIn(TICKET_SORT_FIELDS)
   sort?: TicketSortField;
 
+  // bug: same union-reflection crash — SortDirection is a string-literal union, bare @Field() fails schema build. Needs @Field(() => String).
   @Field({ nullable: true })
   @IsOptional()
   @IsIn(SORT_DIRECTIONS)
