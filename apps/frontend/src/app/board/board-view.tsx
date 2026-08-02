@@ -13,6 +13,7 @@ import type { IBoardViewProps } from './board-view.types';
 import styles from './board-view.module.css';
 
 export function BoardView({ tickets, onEditTicket, onDeleteTicket, onStatusChange, moveTicket }: IBoardViewProps) {
+  // risk: deliberately local, not lifted to TicketsPage — this is the useUrlState seam, don't "fix" by lifting.
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPriorities, setSelectedPriorities] = useState<TicketPriority[]>([]);
   const [selectedAssigneeIds, setSelectedAssigneeIds] = useState<string[]>([]);
