@@ -47,5 +47,23 @@ describe('useUrlState', () => {
     expect(result.current[0].get('view')).toBe('board');
   });
 
-  // q: no coverage for two setParams calls off stale params in one handler (see use-url-state.ts) — worth a case?
+  it('applies two setParams updater calls made off the same stale params in one handler', () => {
+    window.history.replaceState(null, '', '/?view=list');
+    const { result } = renderHook(() => useUrlState());
+
+    act(() => {
+      result.current[1]((prev) => {
+        const next = new URLSearchParams(prev);
+        next.set('sort', 'priority');
+        return next;
+      });
+      result.current[1]((prev) => {
+        const next = new URLSearchParams(prev);
+        next.set('dir', 'asc');
+        return next;
+      });
+    });
+
+    expect(window.location.search).toBe('?view=list&sort=priority&dir=asc');
+  });
 });

@@ -1,4 +1,6 @@
-import { useSyncExternalStore } from 'react';
+import { useMemo, useSyncExternalStore } from 'react';
+
+type ParamsUpdate = URLSearchParams | ((prev: URLSearchParams) => URLSearchParams);
 
 function subscribe(onChange: () => void): () => void {
   window.addEventListener('popstate', onChange);
@@ -9,17 +11,17 @@ function getSnapshot(): string {
   return window.location.search;
 }
 
-export function useUrlState(): [URLSearchParams, (next: URLSearchParams) => void] {
+export function useUrlState(): [URLSearchParams, (next: ParamsUpdate) => void] {
   const search = useSyncExternalStore(subscribe, getSnapshot);
+  const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  // risk: no functional-updater form — two setParams calls off the same stale params in one handler silently drop the first change
-  const setParams = (next: URLSearchParams) => {
-    const query = next.toString();
-    // nit: drops window.location.hash on every call, fine only while nothing uses hash routing
-    window.history.replaceState(null, '', query ? `?${query}` : window.location.pathname);
+  const setParams = (next: ParamsUpdate) => {
+    // read the live URL, not the render-time `search` closure, so two calls in one handler don't clobber each other
+    const resolved = typeof next === 'function' ? next(new URLSearchParams(window.location.search)) : next;
+    const query = resolved.toString();
+    window.history.replaceState(null, '', (query ? `?${query}` : window.location.pathname) + window.location.hash);
     window.dispatchEvent(new PopStateEvent('popstate'));
   };
 
-  // risk: new URLSearchParams(search) is a fresh ref every render, breaks memoized deps/query vars downstream
-  return [new URLSearchParams(search), setParams];
+  return [params, setParams];
 }
