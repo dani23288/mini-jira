@@ -8,7 +8,7 @@ import type {
 } from '@org/types';
 import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS } from '@org/consts';
 import { createMockTickets } from '../data/mock-tickets';
-import { getRankForEnd } from '../utils/rank';
+import { getRankForEnd } from '@org/utils';
 
 function ranksForStatus(tickets: ITicket[], status: TicketStatus, excludeId?: string): string[] {
   return tickets

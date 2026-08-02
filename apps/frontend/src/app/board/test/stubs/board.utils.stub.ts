@@ -6,7 +6,7 @@ export function makeTicket(id: string, overrides: Partial<ITicket> = {}): ITicke
     id,
     title: id,
     status: 'todo',
-    priority: 'medium',
+    priority: 2,
     rank: id,
     createdAt: '2026-01-01T00:00:00.000Z',
     ...overrides,

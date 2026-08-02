@@ -53,7 +53,7 @@ export const getTicketsByStatusCases = [
 export const filterTicketsCases: { name: string; filters: Partial<ITicketFilters>; expectedIds: string[] }[] = [
   { name: 'returns every ticket when no filters are active', filters: {}, expectedIds: ['a', 'b', 'c'] },
   { name: 'filters by title, case-insensitively', filters: { query: 'LOGIN' }, expectedIds: ['a'] },
-  { name: 'filters by priority', filters: { priorities: ['medium', 'low'] }, expectedIds: ['b', 'c'] },
+  { name: 'filters by priority', filters: { priorities: [2, 1] }, expectedIds: ['b', 'c'] },
   { name: 'filters by assignee', filters: { assigneeIds: ['dani-k'] }, expectedIds: ['a'] },
   {
     name: 'treats tickets with no assigneeId as matching the "unassigned" filter value',
@@ -62,12 +62,12 @@ export const filterTicketsCases: { name: string; filters: Partial<ITicketFilters
   },
   {
     name: 'combines query, priority, and assignee filters with AND logic (match)',
-    filters: { query: 'draft', priorities: ['medium'], assigneeIds: ['jamie-m'] },
+    filters: { query: 'draft', priorities: [2], assigneeIds: ['jamie-m'] },
     expectedIds: ['b'],
   },
   {
     name: 'combines query, priority, and assignee filters with AND logic (mismatch)',
-    filters: { query: 'draft', priorities: ['high'], assigneeIds: ['jamie-m'] },
+    filters: { query: 'draft', priorities: [3], assigneeIds: ['jamie-m'] },
     expectedIds: [],
   },
 ];

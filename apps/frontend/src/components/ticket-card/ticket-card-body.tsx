@@ -1,6 +1,6 @@
 import { TICKET_STATUSES } from '@org/consts';
 import { getPriorityColorVar } from '../../utils/priority-color';
-import { findAssignee, getPriorityLabel, getStatusLabel } from '../../utils/ticket-labels';
+import { findAssignee, getPriorityKey, getPriorityLabel, getStatusLabel } from '../../utils/ticket-labels';
 import { Avatar } from '../avatar/avatar';
 import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
 import { getTapeRotation } from './ticket-card.utils';
@@ -39,7 +39,7 @@ export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITi
       {ticket.description && <p className={styles.description}>{ticket.description}</p>}
 
       <div className={styles.footer}>
-        <span className={styles['priority-badge']} data-priority={ticket.priority}>
+        <span className={styles['priority-badge']} data-priority={getPriorityKey(ticket.priority)}>
           {priorityLabel}
         </span>
         <DropdownMenu

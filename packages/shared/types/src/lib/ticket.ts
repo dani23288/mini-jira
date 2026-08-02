@@ -1,4 +1,4 @@
-export type TicketPriority = 'low' | 'medium' | 'high';
+export type TicketPriority = 1 | 2 | 3;
 
 export type TicketStatus = 'todo' | 'in-progress' | 'done';
 

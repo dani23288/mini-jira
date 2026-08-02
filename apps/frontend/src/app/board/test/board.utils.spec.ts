@@ -39,9 +39,9 @@ describe('toggleValue', () => {
 
 describe('filterTickets', () => {
   const tickets = [
-    makeTicket('a', { title: 'Fix login bug', priority: 'high', assigneeId: 'dani-k' }),
-    makeTicket('b', { title: 'Draft onboarding checklist', priority: 'medium', assigneeId: 'jamie-m' }),
-    makeTicket('c', { title: 'Scaffold workspace', priority: 'low' }),
+    makeTicket('a', { title: 'Fix login bug', priority: 3, assigneeId: 'dani-k' }),
+    makeTicket('b', { title: 'Draft onboarding checklist', priority: 2, assigneeId: 'jamie-m' }),
+    makeTicket('c', { title: 'Scaffold workspace', priority: 1 }),
   ];
   const noFilters = { query: '', priorities: [], assigneeIds: [] };
 
