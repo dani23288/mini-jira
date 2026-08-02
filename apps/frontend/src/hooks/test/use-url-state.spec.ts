@@ -46,4 +46,6 @@ describe('useUrlState', () => {
 
     expect(result.current[0].get('view')).toBe('board');
   });
+
+  // q: no coverage for two setParams calls off stale params in one handler (see use-url-state.ts) — worth a case?
 });
