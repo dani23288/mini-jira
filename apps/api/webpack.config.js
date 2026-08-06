@@ -2,10 +2,13 @@ const { NxAppWebpackPlugin } = require('@nx/webpack/app-plugin');
 const { join } = require('path');
 const webpack = require('webpack');
 
-// Optional/conditional deps of mongodb, ws, and Apollo's federation/fastify integrations — none
+// Optional/conditional deps of mongodb, ws, and Apollo's fastify/federation integrations — none
 // of these code paths run (no CSFLE, no compression codecs, no subscriptions, no federation),
 // but webpack still tries to statically resolve the dynamic requires that guard them. Plain
 // `externals` isn't merged into NxAppWebpackPlugin's own config, so IgnorePlugin instead.
+// NOTE: @as-integrations/express5 is NOT dead code — @nestjs/apollo's Express driver actually
+// requires it at runtime. It's a real dependency (see package.json) left unbundled via
+// `externals` below instead, so don't add it back here.
 const IGNORED_OPTIONAL_MODULES = new Set([
   '@aws-sdk/credential-providers',
   'gcp-metadata',
@@ -16,7 +19,6 @@ const IGNORED_OPTIONAL_MODULES = new Set([
   'mongodb-client-encryption',
   'bufferutil',
   'utf-8-validate',
-  '@as-integrations/express5',
   '@as-integrations/fastify',
   '@apollo/subgraph',
   '@apollo/subgraph/package.json',
@@ -27,6 +29,7 @@ const IGNORED_OPTIONAL_MODULES = new Set([
 ]);
 
 module.exports = {
+  externals: ['@as-integrations/express5'],
   output: {
     path: join(__dirname, 'dist'),
     clean: true,
