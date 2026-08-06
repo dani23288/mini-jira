@@ -5,6 +5,7 @@
 
 .chip {
   composes: chip from '../../styles/chip.module.css';
+  background-color: var(--color-surface-sunken);
 }
 
 .chip-selected {

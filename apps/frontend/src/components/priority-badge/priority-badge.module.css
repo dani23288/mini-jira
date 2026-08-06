@@ -1,0 +1,20 @@
+.priority-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-ink);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.priority-badge[data-priority='low'] {
+  background-color: var(--color-priority-low);
+}
+
+.priority-badge[data-priority='medium'] {
+  background-color: var(--color-priority-medium);
+}
+
+.priority-badge[data-priority='high'] {
+  background-color: var(--color-priority-high);
+}
