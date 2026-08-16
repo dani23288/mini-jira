@@ -1,4 +1,4 @@
-import type { TicketPriority, IAssignee } from '@org/types';
+import type { TicketPriority, TicketStatus, IAssignee } from '@org/types';
 
 export interface IFilterShelfProps {
   searchQuery: string;
@@ -8,4 +8,6 @@ export interface IFilterShelfProps {
   onTogglePriority: (priority: TicketPriority) => void;
   selectedAssigneeIds: string[];
   onToggleAssignee: (assigneeId: string) => void;
+  selectedStatuses?: TicketStatus[];
+  onToggleStatus?: (status: TicketStatus) => void;
 }

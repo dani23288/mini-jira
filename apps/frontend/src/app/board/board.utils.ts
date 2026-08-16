@@ -7,6 +7,7 @@ export interface ITicketFilters {
   query: string;
   priorities: TicketPriority[];
   assigneeIds: string[];
+  statuses?: TicketStatus[];
 }
 
 function matchesQuery(ticket: ITicket, normalizedQuery: string): boolean {
@@ -21,13 +22,19 @@ function matchesAssignee(ticket: ITicket, assigneeIds: string[]): boolean {
   return assigneeIds.length === 0 || assigneeIds.includes(ticket.assigneeId ?? UNASSIGNED_ASSIGNEE_ID);
 }
 
+function matchesStatus(ticket: ITicket, statuses: TicketStatus[]): boolean {
+  return statuses.length === 0 || statuses.includes(ticket.status);
+}
+
 export function filterTickets(tickets: ITicket[], filters: ITicketFilters): ITicket[] {
   const normalizedQuery = filters.query.trim().toLowerCase();
+  const statuses = filters.statuses ?? [];
   return tickets.filter(
     (ticket) =>
       matchesQuery(ticket, normalizedQuery) &&
       matchesPriority(ticket, filters.priorities) &&
-      matchesAssignee(ticket, filters.assigneeIds),
+      matchesAssignee(ticket, filters.assigneeIds) &&
+      matchesStatus(ticket, statuses),
   );
 }
 
