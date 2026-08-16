@@ -19,7 +19,10 @@
               "NODE_ENV": "development"
             }
           }
-        }
+        },
+        "outputs": [
+          "{workspaceRoot}/apps/api/dist"
+        ]
       },
       "prune-lockfile": {
         "dependsOn": [
@@ -57,22 +60,20 @@
       },
       "serve": {
         "continuous": true,
-        "executor": "@nx/js:node",
-        "defaultConfiguration": "development",
+        "executor": "nx:run-commands",
         "dependsOn": [
           "build"
         ],
         "options": {
-          "buildTarget": "@org/api:build",
-          "runBuildTargetDependencies": false
-        },
-        "configurations": {
-          "development": {
-            "buildTarget": "@org/api:build:development"
+          "cwd": "apps/api",
+          "parallel": true,
+          "env": {
+            "NODE_ENV": "development"
           },
-          "production": {
-            "buildTarget": "@org/api:build:production"
-          }
+          "commands": [
+            "webpack-cli build --watch",
+            "node --watch dist/main.js"
+          ]
         }
       }
     }

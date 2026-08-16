@@ -30,6 +30,12 @@ const IGNORED_OPTIONAL_MODULES = new Set([
 
 module.exports = {
   externals: ['@as-integrations/express5'],
+  // Persists webpack's module graph/transform output to disk across separate `webpack-cli build`
+  // invocations (nx serve's watch mode re-shells out to a fresh build each restart, not a single
+  // long-lived --watch process) so incremental rebuilds skip re-transforming unchanged files.
+  cache: {
+    type: 'filesystem',
+  },
   output: {
     path: join(__dirname, 'dist'),
     clean: true,
@@ -45,7 +51,7 @@ module.exports = {
   plugins: [
     new NxAppWebpackPlugin({
       target: 'node',
-      compiler: 'tsc',
+      compiler: 'swc',
       main: './src/main.ts',
       tsConfig: './tsconfig.app.json',
       assets: ['./src/assets'],
