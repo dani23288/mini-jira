@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { DndContext, DragOverlay } from '@dnd-kit/core';
 import type { TicketPriority } from '@org/types';
 import { ASSIGNEES, TICKET_STATUSES } from '@org/consts';
-import { SearchBar } from '../../components/search-bar/search-bar';
-import { PriorityFilter } from '../../components/priority-filter/priority-filter';
-import { AssigneeFilter } from '../../components/assignee-filter/assignee-filter';
+import { FilterShelf } from '../../components/filter-shelf/filter-shelf';
 import { BoardColumn } from '../../components/board-column/board-column';
 import { TicketCardOverlay } from '../../components/ticket-card/ticket-card-overlay';
 import { filterTickets, getTicketsByStatus, toggleValue } from './board.utils';
@@ -45,11 +43,15 @@ export function BoardView({ tickets, onEditTicket, onDeleteTicket, onStatusChang
 
   return (
     <>
-      <div className={styles['filter-shelf']}>
-        <SearchBar value={searchQuery} onChange={setSearchQuery} placeholder="Search tickets…" />
-        <PriorityFilter selected={selectedPriorities} onToggle={togglePriority} />
-        <AssigneeFilter assignees={ASSIGNEES} selected={selectedAssigneeIds} onToggle={toggleAssignee} />
-      </div>
+      <FilterShelf
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        assignees={ASSIGNEES}
+        selectedPriorities={selectedPriorities}
+        onTogglePriority={togglePriority}
+        selectedAssigneeIds={selectedAssigneeIds}
+        onToggleAssignee={toggleAssignee}
+      />
 
       <DndContext
         sensors={sensors}
