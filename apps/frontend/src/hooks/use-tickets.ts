@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { Reference } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import type {
   ICreateTicketInput,
@@ -91,6 +92,14 @@ export function useTickets(): IUseTicketsResult {
       runDeleteTicket({
         variables: { id },
         update: (cache) => {
+          // Evicting the entity alone leaves a dangling ref in TICKETS_QUERY's `tickets` array — strip it too.
+          cache.modify({
+            fields: {
+              tickets(existing: readonly Reference[] = [], { readField }) {
+                return existing.filter((ref) => readField('id', ref) !== id);
+              },
+            },
+          });
           cache.evict({ id: cache.identify({ __typename: 'Ticket', id }) });
           cache.gc();
         },
