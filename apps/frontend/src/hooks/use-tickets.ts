@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Reference } from '@apollo/client';
+import type { ApolloCache, Reference } from '@apollo/client';
 import { useMutation, useQuery } from '@apollo/client/react';
 import type {
   ICreateTicketInput,
@@ -14,30 +14,38 @@ import {
   TICKETS_QUERY,
   UPDATE_TICKET_MUTATION,
 } from './use-tickets.consts';
+import type {
+  ICreateTicketData,
+  IDeleteTicketData,
+  ITicketsQueryData,
+  IUpdateTicketData,
+} from './use-tickets.types';
 
-interface ITicketsQueryData {
-  tickets: ITicket[];
+// Appends a newly created ticket to the cached tickets list (used as CREATE_TICKET_MUTATION's `update`).
+function addTicketToCache(cache: ApolloCache, ticket: ITicket): void {
+  const existing = cache.readQuery<ITicketsQueryData>({ query: TICKETS_QUERY });
+  cache.writeQuery({
+    query: TICKETS_QUERY,
+    data: { tickets: [...(existing?.tickets ?? []), ticket] },
+  });
 }
-interface ICreateTicketData {
-  createTicket: ITicket;
-}
-interface IUpdateTicketData {
-  updateTicket: ITicket;
-}
-interface IDeleteTicketData {
-  deleteTicket: boolean;
-}
-// rank isn't part of the client-facing IUpdateTicketInput (only moveTicket sends it) — widen locally for the wire shape.
-type UpdateTicketVariables = { id: string; input: IUpdateTicketInput & { rank?: string } };
 
 export function useTickets(): IUseTicketsResult {
   const [error, setError] = useState<string | null>(null);
   const { data, loading } = useQuery<ITicketsQueryData>(TICKETS_QUERY);
   const tickets = data?.tickets ?? [];
 
-  const [runCreateTicket] = useMutation<ICreateTicketData, { input: ICreateTicketInput }>(CREATE_TICKET_MUTATION);
-  const [runUpdateTicket] = useMutation<IUpdateTicketData, UpdateTicketVariables>(UPDATE_TICKET_MUTATION);
-  const [runDeleteTicket] = useMutation<IDeleteTicketData, { id: string }>(DELETE_TICKET_MUTATION);
+  const [runCreateTicket] = useMutation<
+    ICreateTicketData,
+    { input: ICreateTicketInput }
+  >(CREATE_TICKET_MUTATION);
+  const [runUpdateTicket] = useMutation<
+    IUpdateTicketData,
+    { id: string; input: IUpdateTicketInput }
+  >(UPDATE_TICKET_MUTATION);
+  const [runDeleteTicket] = useMutation<IDeleteTicketData, { id: string }>(
+    DELETE_TICKET_MUTATION,
+  );
 
   const runMutation = async (mutate: () => Promise<unknown>): Promise<void> => {
     try {
@@ -54,25 +62,24 @@ export function useTickets(): IUseTicketsResult {
         variables: { input },
         update: (cache, result) => {
           const created = result.data?.createTicket;
-          if (!created) {
-            return;
+          if (created) {
+            addTicketToCache(cache, created);
           }
-          const existing = cache.readQuery<ITicketsQueryData>({ query: TICKETS_QUERY });
-          cache.writeQuery({
-            query: TICKETS_QUERY,
-            data: { tickets: [...(existing?.tickets ?? []), created] },
-          });
         },
       }),
     );
   };
 
   const updateTicket = (id: string, changes: IUpdateTicketInput): void => {
-    void runMutation(() => runUpdateTicket({ variables: { id, input: changes } }));
+    void runMutation(() =>
+      runUpdateTicket({ variables: { id, input: changes } }),
+    );
   };
 
   const updateStatus = (id: string, status: TicketStatus): void => {
-    void runMutation(() => runUpdateTicket({ variables: { id, input: { status } } }));
+    void runMutation(() =>
+      runUpdateTicket({ variables: { id, input: { status } } }),
+    );
   };
 
   // Drag sends an explicit rank (computed by the caller via getRankForIndex/getRankForEnd) so the
@@ -82,7 +89,9 @@ export function useTickets(): IUseTicketsResult {
     void runMutation(() =>
       runUpdateTicket({
         variables: { id, input: { status, rank } },
-        optimisticResponse: current ? { updateTicket: { ...current, status, rank } } : undefined,
+        optimisticResponse: current
+          ? { updateTicket: { ...current, status, rank } }
+          : undefined,
       }),
     );
   };
@@ -107,5 +116,14 @@ export function useTickets(): IUseTicketsResult {
     );
   };
 
-  return { tickets, loading, error, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket };
+  return {
+    tickets,
+    loading,
+    error,
+    createTicket,
+    updateTicket,
+    updateStatus,
+    moveTicket,
+    deleteTicket,
+  };
 }

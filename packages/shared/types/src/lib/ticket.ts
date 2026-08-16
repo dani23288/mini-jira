@@ -31,6 +31,8 @@ export interface IUpdateTicketInput {
   priority?: TicketPriority;
   status?: TicketStatus;
   assigneeId?: string;
+  // Only drag-move sends this (see useTickets.moveTicket) — matches the API's UpdateTicketInput DTO.
+  rank?: string;
 }
 
 export interface ITicketsFilter {
