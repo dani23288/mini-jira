@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ReactNode } from 'react';
 import type { ITicket, TicketStatus } from '@org/types';
 import { useTickets } from '../../hooks/use-tickets';
 import { useConfirm } from '../../hooks/use-confirm';
@@ -17,6 +18,7 @@ import {
 import styles from './tickets-page.module.css';
 
 type TicketsView = 'board' | 'list';
+const VIEW_MODES: TicketsView[] = ['board', 'list'];
 
 export function TicketsPage() {
   const { tickets, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket } = useTickets();
@@ -25,7 +27,7 @@ export function TicketsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [urlParams, setUrlParams] = useUrlState();
 
-  const view: TicketsView = urlParams.get('view') === 'list' ? 'list' : 'board';
+  const view = (urlParams.get('view') ?? 'board') as TicketsView;
   const setView = (nextView: TicketsView) => {
     setUrlParams((prev) => {
       const next = new URLSearchParams(prev);
@@ -59,42 +61,10 @@ export function TicketsPage() {
     }
   };
 
-  return (
-    <div className={styles.page}>
-      <header className={styles.header}>
-        <h1 className={styles.title}>Ticket Desk</h1>
-        <div className={styles['header-actions']}>
-          <div className={styles['view-toggle']} role="group" aria-label="Board or list view">
-            <Button
-              type="button"
-              variant={view === 'board' ? 'primary' : 'secondary'}
-              aria-pressed={view === 'board'}
-              onClick={() => setView('board')}
-            >
-              Board
-            </Button>
-            <Button
-              type="button"
-              variant={view === 'list' ? 'primary' : 'secondary'}
-              aria-pressed={view === 'list'}
-              onClick={() => setView('list')}
-            >
-              List
-            </Button>
-          </div>
-          <ThemeToggle />
-          <Button onClick={() => setIsCreating(true)}>+ New ticket</Button>
-        </div>
-      </header>
-
-      {view === 'list' ? (
-        <ListView
-          tickets={tickets}
-          onEditTicket={setEditingTicket}
-          onDeleteTicket={handleDeleteTicket}
-          onStatusChange={handleStatusChange}
-        />
-      ) : (
+  const viewConfigByMode: Record<TicketsView, { label: string; element: ReactNode }> = {
+    board: {
+      label: 'Board',
+      element: (
         <BoardView
           tickets={tickets}
           onEditTicket={setEditingTicket}
@@ -102,7 +72,45 @@ export function TicketsPage() {
           onStatusChange={handleStatusChange}
           moveTicket={moveTicket}
         />
-      )}
+      ),
+    },
+    list: {
+      label: 'List',
+      element: (
+        <ListView
+          tickets={tickets}
+          onEditTicket={setEditingTicket}
+          onDeleteTicket={handleDeleteTicket}
+          onStatusChange={handleStatusChange}
+        />
+      ),
+    },
+  };
+
+  return (
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Ticket Desk</h1>
+        <div className={styles['header-actions']}>
+          <div className={styles['view-toggle']} role="group" aria-label="Board or list view">
+            {VIEW_MODES.map((mode) => (
+              <Button
+                key={mode}
+                type="button"
+                variant={view === mode ? 'primary' : 'secondary'}
+                aria-pressed={view === mode}
+                onClick={() => setView(mode)}
+              >
+                {viewConfigByMode[mode].label}
+              </Button>
+            ))}
+          </div>
+          <ThemeToggle />
+          <Button onClick={() => setIsCreating(true)}>+ New ticket</Button>
+        </div>
+      </header>
+
+      {(viewConfigByMode[view] ?? viewConfigByMode.board).element}
 
       {isModalOpen && (
         <TicketModal
