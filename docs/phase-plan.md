@@ -94,17 +94,17 @@ Backend first, agreed. Steps 1-2 keep app green on mock data before any network 
 
 1. [x] **Shared prep.** Create `@org/utils`, move `rank.ts` + spec, delete `assignSequentialRanks`. `TicketPriority` to `1 | 2 | 3`, `TICKET_PRIORITIES` to `{ value, label, key }`. Done, merged to `phase-3` (`05ffb98`).
 2. [x] **Frontend priority migration.** `getPriorityLabel`, `getPriorityColorVar`, `data-priority`, `PriorityFilter`, `TicketModal` (`Number()` coercion), `board.utils` stubs + cases. App still runs on mock data. CSS untouched — mapping stays inside the two utils. Done, merged to `phase-3` (`05ffb98`).
-3. [~] **API scaffold.** Generate app, wire `@nestjs/config`, connect Atlas, confirm boot. In progress — branch `worktree-agent-aac50ec656e005622` (HEAD `90b3dd8`), worktree `.claude/worktrees/agent-aac50ec656e005622`, not merged.
-4. [~] **Persistence.** Mongoose schema, `toTicket` mapper, `TicketsService` with `find(filter)` + rank rule. Unit tests here. In progress — same branch as step 3, not merged.
-5. [~] **GraphQL layer.** DTOs, resolver, query with args, 3 mutations, `@IsIn` validation. In progress — same branch as step 3, not merged.
+3. [x] **API scaffold.** Generate app, wire `@nestjs/config`, connect Atlas, confirm boot. Done, merged via PR #3 (`ccfeed9`).
+4. [x] **Persistence.** Mongoose schema, `toTicket` mapper, `TicketsService` with `find(filter)` + rank rule. Unit tests here. Done, merged via PR #3 (`ccfeed9`).
+5. [x] **GraphQL layer.** DTOs, resolver, query with args, 3 mutations, `@IsIn` validation. Done, merged via PR #3 (`ccfeed9`).
 6. [ ] **Transport swap.** Apollo + Vite proxy, rewrite `useTickets()` internals, add `loading` / `error` / optimistic drag, delete `mock-tickets.ts`. Board fully on real data. Not started.
-7. [~] **URL state.** `useUrlState`, move `view` + filters + sort into URL. In progress — branch `worktree-agent-a31b14927de775d3a` (HEAD `be19229`), worktree `.claude/worktrees/agent-a31b14927de775d3a`, not merged.
-8. [~] **Shell split.** Extract `TicketsPage`, `BoardView`. In progress — branch `worktree-agent-ae1964d858b36bcdf` (HEAD `76e6ee1`), worktree `.claude/worktrees/agent-ae1964d858b36bcdf`, not merged.
-9. [~] **List primitives.** Extract `PriorityBadge`, build `StatusFilter`. In progress — branch `worktree-agent-a93f92862fc05cf9c` (HEAD `48547f6`), worktree `.claude/worktrees/agent-a93f92862fc05cf9c`, not merged.
+7. [x] **URL state.** `useUrlState`, move `view` + filters + sort into URL. Done, merged via PR #4 (`c60a28c`).
+8. [x] **Shell split.** Extract `TicketsPage`, `BoardView`. Done, merged via PR #5 (`a57d4d2`).
+9. [x] **List primitives.** Extract `PriorityBadge`, build `StatusFilter`. Done, merged via PR #6 (`1899e29`).
 10. [ ] **List view.** Table, sortable priority header, row actions. Not started.
 11. [ ] **QA pass.** Not started.
 
-Each in-progress branch carries 3 commits: coder feat commit, review commit (inline comments), fix commit (review findings addressed). None merged into `phase-3` yet — holding as separate branches per instruction. Worktrees never deleted, kept for inspection.
+Steps 6, 10, 11 remain. Worktrees from merged branches never deleted, kept for inspection.
 
 ### Deferred to phase 4
 
