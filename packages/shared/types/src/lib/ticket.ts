@@ -2,6 +2,10 @@ export type TicketPriority = 1 | 2 | 3;
 
 export type TicketStatus = 'todo' | 'in-progress' | 'done';
 
+export type TicketSortField = 'rank' | 'priority' | 'createdAt';
+
+export type SortDirection = 'asc' | 'desc';
+
 export interface ITicket {
   id: string;
   title: string;
@@ -27,6 +31,15 @@ export interface IUpdateTicketInput {
   priority?: TicketPriority;
   status?: TicketStatus;
   assigneeId?: string;
+}
+
+export interface ITicketsFilter {
+  status?: TicketStatus;
+  priority?: TicketPriority;
+  assigneeId?: string;
+  search?: string;
+  sort?: TicketSortField;
+  dir?: SortDirection;
 }
 
 export interface IUseTicketsResult {
