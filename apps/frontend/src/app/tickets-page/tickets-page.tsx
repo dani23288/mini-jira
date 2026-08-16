@@ -20,7 +20,8 @@ import styles from './tickets-page.module.css';
 const VIEW_MODES: TicketsView[] = ['board', 'list'];
 
 export function TicketsPage() {
-  const { tickets, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket } = useTickets();
+  const { tickets, loading, error, createTicket, updateTicket, updateStatus, moveTicket, deleteTicket } =
+    useTickets();
   const confirm = useConfirm();
   const [editingTicket, setEditingTicket] = useState<ITicket | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -92,6 +93,19 @@ export function TicketsPage() {
       </header>
 
       {(viewConfigByMode[view] ?? viewConfigByMode.board).element}
+      {error && <div className={styles['error-banner']}>{error}</div>}
+
+      {loading ? (
+        <p className={styles.loading}>Loading tickets…</p>
+      ) : (
+        <BoardView
+          tickets={tickets}
+          onEditTicket={setEditingTicket}
+          onDeleteTicket={handleDeleteTicket}
+          onStatusChange={handleStatusChange}
+          moveTicket={moveTicket}
+        />
+      )}
 
       {isModalOpen && (
         <TicketModal
