@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { ReactNode } from 'react';
 import type { ITicket, TicketStatus } from '@org/types';
 import { useTickets } from '../../hooks/use-tickets';
 import { useConfirm } from '../../hooks/use-confirm';
@@ -7,17 +6,17 @@ import { useUrlState } from '../../hooks/use-url-state';
 import { Button } from '../../components/button/button';
 import { ThemeToggle } from '../../components/theme-toggle/theme-toggle';
 import { TicketModal } from '../../components/ticket-modal/ticket-modal';
-import { BoardView } from '../board/board-view';
-import { ListView } from '../list/list-view';
 import {
+  BUTTON_VARIANT_BY_ACTIVE,
   DELETE_TICKET_CONFIRM_LABEL,
   DELETE_TICKET_CONFIRM_TITLE,
   DELETE_TICKET_CONFIRM_VARIANT,
+  createViewConfigByMode,
   getDeleteTicketConfirmBody,
+  type TicketsView,
 } from './tickets-page.consts';
 import styles from './tickets-page.module.css';
 
-type TicketsView = 'board' | 'list';
 const VIEW_MODES: TicketsView[] = ['board', 'list'];
 
 export function TicketsPage() {
@@ -61,31 +60,13 @@ export function TicketsPage() {
     }
   };
 
-  const viewConfigByMode: Record<TicketsView, { label: string; element: ReactNode }> = {
-    board: {
-      label: 'Board',
-      element: (
-        <BoardView
-          tickets={tickets}
-          onEditTicket={setEditingTicket}
-          onDeleteTicket={handleDeleteTicket}
-          onStatusChange={handleStatusChange}
-          moveTicket={moveTicket}
-        />
-      ),
-    },
-    list: {
-      label: 'List',
-      element: (
-        <ListView
-          tickets={tickets}
-          onEditTicket={setEditingTicket}
-          onDeleteTicket={handleDeleteTicket}
-          onStatusChange={handleStatusChange}
-        />
-      ),
-    },
-  };
+  const viewConfigByMode = createViewConfigByMode({
+    tickets,
+    onEditTicket: setEditingTicket,
+    onDeleteTicket: handleDeleteTicket,
+    onStatusChange: handleStatusChange,
+    moveTicket,
+  });
 
   return (
     <div className={styles.page}>
@@ -97,7 +78,7 @@ export function TicketsPage() {
               <Button
                 key={mode}
                 type="button"
-                variant={view === mode ? 'primary' : 'secondary'}
+                variant={BUTTON_VARIANT_BY_ACTIVE[`${view === mode}`]}
                 aria-pressed={view === mode}
                 onClick={() => setView(mode)}
               >
