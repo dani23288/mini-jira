@@ -32,12 +32,10 @@ export class TicketsService {
   constructor(@InjectModel(Ticket.name) private readonly ticketModel: Model<TicketDocument>) {}
 
   async find(filter: ITicketsFilter): Promise<ITicket[]> {
-    const query: Record<string, unknown> = {};
-    for (const { input, mongo } of EQUALITY_FILTER_FIELDS) {
-      if (filter[input]) {
-        query[mongo] = filter[input];
-      }
-    }
+    const query: Record<string, unknown> = EQUALITY_FILTER_FIELDS.reduce(
+      (acc, { input, mongo }) => (filter[input] ? { ...acc, [mongo]: filter[input] } : acc),
+      {} as Record<string, unknown>,
+    );
     if (filter.search) {
       query.title = { $regex: escapeRegExp(filter.search), $options: 'i' };
     }
