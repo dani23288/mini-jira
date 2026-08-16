@@ -33,6 +33,15 @@ export interface IUpdateTicketInput {
   assigneeId?: string;
 }
 
+export interface ITicketsFilter {
+  status?: TicketStatus;
+  priority?: TicketPriority;
+  assigneeId?: string;
+  search?: string;
+  sort?: TicketSortField;
+  dir?: SortDirection;
+}
+
 export interface IUseTicketsResult {
   tickets: ITicket[];
   createTicket(input: ICreateTicketInput): void;

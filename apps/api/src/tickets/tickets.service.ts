@@ -1,28 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
-import type { ICreateTicketInput, ITicket, SortDirection, TicketPriority, TicketSortField, TicketStatus } from '@org/types';
+import type { ICreateTicketInput, ITicket, ITicketsFilter, TicketPriority, TicketStatus } from '@org/types';
 import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS } from '@org/consts';
 import { getRankForEnd } from '@org/utils';
 import { Ticket, TicketDocument } from './schemas/ticket.schema';
 import { toTicket } from './tickets.mapper';
-
-export interface TicketsFilter {
-  status?: TicketStatus;
-  priority?: TicketPriority;
-  assigneeId?: string;
-  search?: string;
-  sort?: TicketSortField;
-  dir?: SortDirection;
-}
-
-// Equality filters: input field -> mongo field (same name today, but kept explicit so a
-// renamed/derived mongo field doesn't have to fight this loop).
-const EQUALITY_FILTER_FIELDS: { input: 'status' | 'priority' | 'assigneeId'; mongo: string }[] = [
-  { input: 'status', mongo: 'status' },
-  { input: 'priority', mongo: 'priority' },
-  { input: 'assigneeId', mongo: 'assigneeId' },
-];
+import { EQUALITY_FILTER_FIELDS } from './tickets.consts';
 
 export interface UpdateTicketData {
   title?: string;
@@ -47,7 +31,7 @@ function escapeRegExp(value: string): string {
 export class TicketsService {
   constructor(@InjectModel(Ticket.name) private readonly ticketModel: Model<TicketDocument>) {}
 
-  async find(filter: TicketsFilter): Promise<ITicket[]> {
+  async find(filter: ITicketsFilter): Promise<ITicket[]> {
     const query: Record<string, unknown> = {};
     for (const { input, mongo } of EQUALITY_FILTER_FIELDS) {
       if (filter[input]) {
