@@ -1,7 +1,7 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsIn, IsOptional, IsString, MinLength } from 'class-validator';
 import type { IUpdateTicketInput, TicketPriority, TicketStatus } from '@org/types';
-import { TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
+import { TICKET_PRIORITY_VALUES, TICKET_STATUS_VALUES } from '@org/consts';
 
 @InputType('UpdateTicketInput')
 export class UpdateTicketInput implements IUpdateTicketInput {
@@ -18,12 +18,12 @@ export class UpdateTicketInput implements IUpdateTicketInput {
 
   @Field(() => Int, { nullable: true })
   @IsOptional()
-  @IsIn(TICKET_PRIORITIES.map((option) => option.value))
+  @IsIn(TICKET_PRIORITY_VALUES)
   priority?: TicketPriority;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsIn(TICKET_STATUSES.map((option) => option.value))
+  @IsIn(TICKET_STATUS_VALUES)
   status?: TicketStatus;
 
   @Field({ nullable: true })

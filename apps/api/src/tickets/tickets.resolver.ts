@@ -1,5 +1,5 @@
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { CreateTicketInput } from './dto/create-ticket.input';
+import { CreateTicketDto } from './dto/create-ticket.dto';
 import { TicketModel } from './dto/ticket.model';
 import { TicketsArgs } from './dto/tickets.args';
 import { UpdateTicketInput } from './dto/update-ticket.input';
@@ -15,7 +15,7 @@ export class TicketsResolver {
   }
 
   @Mutation(() => TicketModel)
-  createTicket(@Args('input') input: CreateTicketInput) {
+  createTicket(@Args('input') input: CreateTicketDto) {
     return this.ticketsService.create(input);
   }
 

@@ -2,6 +2,10 @@ export type TicketPriority = 1 | 2 | 3;
 
 export type TicketStatus = 'todo' | 'in-progress' | 'done';
 
+export type TicketSortField = 'rank' | 'priority' | 'createdAt';
+
+export type SortDirection = 'asc' | 'desc';
+
 export interface ITicket {
   id: string;
   title: string;

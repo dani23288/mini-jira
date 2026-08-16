@@ -1,12 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
-import type { ICreateTicketInput, ITicket, TicketPriority, TicketStatus } from '@org/types';
+import type { ICreateTicketInput, ITicket, SortDirection, TicketPriority, TicketSortField, TicketStatus } from '@org/types';
 import { DEFAULT_TICKET_PRIORITY, DEFAULT_TICKET_STATUS } from '@org/consts';
 import { getRankForEnd } from '@org/utils';
 import { Ticket, TicketDocument } from './schemas/ticket.schema';
 import { toTicket } from './tickets.mapper';
-import type { SortDirection, TicketSortField } from './dto/tickets.args';
 
 export interface TicketsFilter {
   status?: TicketStatus;
@@ -16,6 +15,14 @@ export interface TicketsFilter {
   sort?: TicketSortField;
   dir?: SortDirection;
 }
+
+// Equality filters: input field -> mongo field (same name today, but kept explicit so a
+// renamed/derived mongo field doesn't have to fight this loop).
+const EQUALITY_FILTER_FIELDS: { input: 'status' | 'priority' | 'assigneeId'; mongo: string }[] = [
+  { input: 'status', mongo: 'status' },
+  { input: 'priority', mongo: 'priority' },
+  { input: 'assigneeId', mongo: 'assigneeId' },
+];
 
 export interface UpdateTicketData {
   title?: string;
@@ -42,14 +49,10 @@ export class TicketsService {
 
   async find(filter: TicketsFilter): Promise<ITicket[]> {
     const query: Record<string, unknown> = {};
-    if (filter.status) {
-      query.status = filter.status;
-    }
-    if (filter.priority) {
-      query.priority = filter.priority;
-    }
-    if (filter.assigneeId) {
-      query.assigneeId = filter.assigneeId;
+    for (const { input, mongo } of EQUALITY_FILTER_FIELDS) {
+      if (filter[input]) {
+        query[mongo] = filter[input];
+      }
     }
     if (filter.search) {
       query.title = { $regex: escapeRegExp(filter.search), $options: 'i' };
@@ -69,11 +72,9 @@ export class TicketsService {
     const status = input.status ?? DEFAULT_TICKET_STATUS;
     const rank = await this.getEndOfColumnRank(status);
     const doc = await this.ticketModel.create({
-      title: input.title,
-      description: input.description,
+      ...input,
       status,
       priority: input.priority ?? DEFAULT_TICKET_PRIORITY,
-      assigneeId: input.assigneeId,
       rank,
     });
     return toTicket(doc);

@@ -1,24 +1,18 @@
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 import { IsIn, IsOptional, IsString } from 'class-validator';
-import type { TicketPriority, TicketStatus } from '@org/types';
-import { TICKET_PRIORITIES, TICKET_STATUSES } from '@org/consts';
-
-export const TICKET_SORT_FIELDS = ['rank', 'priority', 'createdAt'] as const;
-export type TicketSortField = (typeof TICKET_SORT_FIELDS)[number];
-
-export const SORT_DIRECTIONS = ['asc', 'desc'] as const;
-export type SortDirection = (typeof SORT_DIRECTIONS)[number];
+import type { SortDirection, TicketPriority, TicketSortField, TicketStatus } from '@org/types';
+import { SORT_DIRECTIONS, TICKET_PRIORITY_VALUES, TICKET_SORT_FIELDS, TICKET_STATUS_VALUES } from '@org/consts';
 
 @ArgsType()
 export class TicketsArgs {
   @Field(() => String, { nullable: true })
   @IsOptional()
-  @IsIn(TICKET_STATUSES.map((option) => option.value))
+  @IsIn(TICKET_STATUS_VALUES)
   status?: TicketStatus;
 
   @Field(() => Int, { nullable: true })
   @IsOptional()
-  @IsIn(TICKET_PRIORITIES.map((option) => option.value))
+  @IsIn(TICKET_PRIORITY_VALUES)
   priority?: TicketPriority;
 
   @Field({ nullable: true })
