@@ -44,6 +44,8 @@ export interface ITicketsFilter {
 
 export interface IUseTicketsResult {
   tickets: ITicket[];
+  loading: boolean;
+  error: string | null;
   createTicket(input: ICreateTicketInput): void;
   updateTicket(id: string, changes: IUpdateTicketInput): void;
   updateStatus(id: string, status: TicketStatus): void;
