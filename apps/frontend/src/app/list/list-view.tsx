@@ -30,7 +30,7 @@ export function ListView({ tickets, onEditTicket, onDeleteTicket, onStatusChange
   };
 
   const togglePrioritySort = () => {
-    setPrioritySort((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+    setPrioritySort((prev) => (prev === 'asc' ? 'desc' : prev === 'desc' ? null : 'asc'));
   };
 
   const filteredTickets = filterTickets(tickets, {

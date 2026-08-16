@@ -21,7 +21,9 @@ export function FilterShelf({
       <SearchBar value={searchQuery} onChange={onSearchQueryChange} placeholder="Search tickets…" />
       <PriorityFilter selected={selectedPriorities} onToggle={onTogglePriority} />
       <AssigneeFilter assignees={assignees} selected={selectedAssigneeIds} onToggle={onToggleAssignee} />
-      {selectedStatuses && onToggleStatus && <StatusFilter selected={selectedStatuses} onToggle={onToggleStatus} />}
+      {selectedStatuses !== undefined && onToggleStatus && (
+        <StatusFilter selected={selectedStatuses} onToggle={onToggleStatus} />
+      )}
     </div>
   );
 }
