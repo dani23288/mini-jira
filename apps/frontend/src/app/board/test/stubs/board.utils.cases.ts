@@ -60,6 +60,7 @@ export const filterTicketsCases: { name: string; filters: Partial<ITicketFilters
     filters: { assigneeIds: ['unassigned'] },
     expectedIds: ['c'],
   },
+  { name: 'filters by status', filters: { statuses: ['done'] }, expectedIds: ['b'] },
   {
     name: 'combines query, priority, and assignee filters with AND logic (match)',
     filters: { query: 'draft', priorities: [2], assigneeIds: ['jamie-m'] },
