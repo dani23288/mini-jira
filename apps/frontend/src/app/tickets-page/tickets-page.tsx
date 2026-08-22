@@ -92,20 +92,12 @@ export function TicketsPage() {
         </div>
       </header>
 
-      {(viewConfigByMode[view] ?? viewConfigByMode.board).element}
-      {error && <div className={styles['error-banner']}>{error}</div>}
-
       {loading ? (
         <p className={styles.loading}>Loading tickets…</p>
       ) : (
-        <BoardView
-          tickets={tickets}
-          onEditTicket={setEditingTicket}
-          onDeleteTicket={handleDeleteTicket}
-          onStatusChange={handleStatusChange}
-          moveTicket={moveTicket}
-        />
+        (viewConfigByMode[view] ?? viewConfigByMode.board).element
       )}
+      {error && <div className={styles['error-banner']}>{error}</div>}
 
       {isModalOpen && (
         <TicketModal

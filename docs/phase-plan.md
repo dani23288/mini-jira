@@ -97,14 +97,16 @@ Backend first, agreed. Steps 1-2 keep app green on mock data before any network 
 3. [x] **API scaffold.** Generate app, wire `@nestjs/config`, connect Atlas, confirm boot. Done, merged via PR #3 (`ccfeed9`).
 4. [x] **Persistence.** Mongoose schema, `toTicket` mapper, `TicketsService` with `find(filter)` + rank rule. Unit tests here. Done, merged via PR #3 (`ccfeed9`).
 5. [x] **GraphQL layer.** DTOs, resolver, query with args, 3 mutations, `@IsIn` validation. Done, merged via PR #3 (`ccfeed9`).
-6. [ ] **Transport swap.** Apollo + Vite proxy, rewrite `useTickets()` internals, add `loading` / `error` / optimistic drag, delete `mock-tickets.ts`. Board fully on real data. Not started.
+6. [x] **Transport swap.** Apollo + Vite proxy, rewrite `useTickets()` internals, add `loading` / `error` / optimistic drag, delete `mock-tickets.ts`. Board fully on real data. Done, merged to `phase-3` (`f0f9f8e`, `7d29f37`, `ddd871e`).
 7. [x] **URL state.** `useUrlState`, move `view` + filters + sort into URL. Done, merged via PR #4 (`c60a28c`).
 8. [x] **Shell split.** Extract `TicketsPage`, `BoardView`. Done, merged via PR #5 (`a57d4d2`).
 9. [x] **List primitives.** Extract `PriorityBadge`, build `StatusFilter`. Done, merged via PR #6 (`1899e29`).
-10. [ ] **List view.** Table, sortable priority header, row actions. Not started.
+10. [x] **List view.** Table, sortable priority header, row actions. Done, merged via PR #8 (`874d297`, `1bd95e3`, `501f464`).
+
+    PR #8 merge-back into `phase-3` left `tickets-page.tsx` with a double render block referencing an undefined `BoardView`. Fixed.
 11. [ ] **QA pass.** Not started.
 
-Steps 6, 10, 11 remain. Worktrees from merged branches never deleted, kept for inspection.
+Step 11 remains.
 
 ### Deferred to phase 4
 
