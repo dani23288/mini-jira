@@ -11,6 +11,12 @@
     },
     {
       "path": "./packages/shared/consts"
+    },
+    {
+      "path": "./packages/shared/utils"
+    },
+    {
+      "path": "./apps/api"
     }
   ],
   "compilerOptions": {}

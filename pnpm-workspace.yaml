@@ -4,5 +4,9 @@ packages:
   - 'packages/shared/*'
   - 'shared/*'
 allowBuilds:
+  '@apollo/protobufjs': true
+  '@parcel/watcher': true
   '@swc/core': true
+  less: true
   nx: true
+  unrs-resolver: true

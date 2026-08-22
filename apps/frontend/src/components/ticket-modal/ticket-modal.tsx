@@ -81,9 +81,9 @@ export function TicketModal({ mode, initialTicket, onClose, onSubmit }: ITicketM
           <SelectField
             label="Priority"
             triggerLabel="Priority"
-            value={priority}
-            options={TICKET_PRIORITIES.map((option) => ({ value: option.value, label: option.label }))}
-            onChange={(value) => setPriority(value as TicketPriority)}
+            value={String(priority)}
+            options={TICKET_PRIORITIES.map((option) => ({ value: String(option.value), label: option.label }))}
+            onChange={(value) => setPriority(Number(value) as TicketPriority)}
           />
 
           <SelectField

@@ -18,6 +18,9 @@
     "target": "es2022",
     "customConditions": ["@org/source"],
     "noUncheckedSideEffectImports": false,
-    "types": ["*"]
+    "types": ["*"],
+    "paths": {
+      "@org/utils": ["./packages/shared/utils/src/index.ts"]
+    }
   }
 }

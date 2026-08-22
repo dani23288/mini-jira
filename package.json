@@ -5,11 +5,16 @@
   "scripts": {},
   "private": true,
   "devDependencies": {
+    "@nestjs/schematics": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
     "@nx/js": "23.1.0",
+    "@nx/nest": "23.1.0",
+    "@nx/node": "23.1.0",
     "@nx/react": "23.1.0",
     "@nx/vite": "23.1.0",
     "@nx/vitest": "23.1.0",
     "@nx/web": "23.1.0",
+    "@nx/webpack": "23.1.0",
     "@swc-node/register": "1.11.1",
     "@swc/core": "1.15.8",
     "@swc/helpers": "0.5.18",
@@ -25,13 +30,24 @@
     "jsdom": "^27.1.0",
     "nx": "23.1.0",
     "prettier": "^3.8.1",
+    "swc-loader": "^0.2.7",
     "tslib": "^2.3.0",
     "typescript": "~6.0.3",
     "vite": "^8.0.0",
-    "vitest": "~4.1.0"
+    "vitest": "~4.1.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^7.0.0",
+    "webpack-dev-server": "^5.2.1"
   },
   "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "axios": "^1.6.0",
+    "fractional-indexing": "^4.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.0"
   }
 }

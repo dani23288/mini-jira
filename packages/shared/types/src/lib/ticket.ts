@@ -1,6 +1,10 @@
-export type TicketPriority = 'low' | 'medium' | 'high';
+export type TicketPriority = 1 | 2 | 3;
 
 export type TicketStatus = 'todo' | 'in-progress' | 'done';
+
+export type TicketSortField = 'rank' | 'priority' | 'createdAt';
+
+export type SortDirection = 'asc' | 'desc';
 
 export interface ITicket {
   id: string;
@@ -27,10 +31,23 @@ export interface IUpdateTicketInput {
   priority?: TicketPriority;
   status?: TicketStatus;
   assigneeId?: string;
+  // Only drag-move sends this (see useTickets.moveTicket) — matches the API's UpdateTicketInput DTO.
+  rank?: string;
+}
+
+export interface ITicketsFilter {
+  status?: TicketStatus;
+  priority?: TicketPriority;
+  assigneeId?: string;
+  search?: string;
+  sort?: TicketSortField;
+  dir?: SortDirection;
 }
 
 export interface IUseTicketsResult {
   tickets: ITicket[];
+  loading: boolean;
+  error: string | null;
   createTicket(input: ICreateTicketInput): void;
   updateTicket(id: string, changes: IUpdateTicketInput): void;
   updateStatus(id: string, status: TicketStatus): void;

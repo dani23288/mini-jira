@@ -1,0 +1,17 @@
+.group {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.chip {
+  composes: chip from '../../styles/chip.module.css';
+  background-color: var(--color-surface-sunken);
+}
+
+.chip-selected {
+  composes: chip-selected from '../../styles/chip.module.css';
+}
+
+.chip-muted {
+  composes: chip-muted from '../../styles/chip.module.css';
+}

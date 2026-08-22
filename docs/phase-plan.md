@@ -27,7 +27,29 @@ Final
 - [x] `TicketModal` Escape-to-close + focus-return-to-trigger, matching `ConfirmDialog`. `DropdownMenu`'s own Escape handler now stops propagation so nested Priority/Status/Assignee dropdowns don't also close the modal.
 - [x] PR #2 review pass: all 22 review threads resolved (rank-sort comparator, theme-key drift comment, `AssigneeFilter` reusing `Avatar`).
 
-## Phase 3 (current)
+## Phase 3 (done)
 
-- Separate list/table view (sortable by priority, still filterable by status).
-- Real backend: NestJS + GraphQL + MongoDB, swap `useTickets()`'s internals from mock state to real queries/mutations, no change to call signature.
+Backend — `apps/api`
+- [x] NestJS + GraphQL (code-first) + MongoDB Atlas via `@nestjs/mongoose`, `toTicket` mapper. `status` wire as validated `String`, `priority` as `Int`.
+- [x] `TicketsService.find(filter)`: server-side filter/sort/search, one query `tickets(status, priority, assigneeId, search, sort, dir)`, 3 mutations (create/update/delete). Rank recomputed server-side on status change (drag sends explicit rank instead).
+
+Shared
+- [x] `@org/utils` (`getRankForEnd`/`getRankForIndex`), `TicketPriority` numeric union, `TICKET_PRIORITIES` as `{ value, label, key }`. Deleted mock data + `assignSequentialRanks`.
+
+Frontend
+- [x] Apollo Client (Vite proxy to `/graphql`), `useTickets()` rewritten onto real API, optimistic drag, loading/error states.
+- [x] `useUrlState` (no router) — URL owns view/filters/sort/dir.
+- [x] `TicketsPage` split into `BoardView` / `ListView`; `PriorityBadge` extracted for reuse.
+- [x] List view: sortable Priority column (`aria-sort`), `StatusFilter` chips, row actions via shared `DropdownMenu`.
+
+Final
+- [x] QA pass: board + list, CRUD, drag-and-drop, filters, search, sort, dark mode, status-change rank fix — all verified against real API + Atlas. No bugs found.
+
+### Deferred to phase 4
+
+- Toast component (banner state shape already right, only render swaps).
+- User-defined columns. `String` status already allows it; cost is `@org/types` union to `string`, plus runtime lookup in `BoardColumn` / `ticket-labels`.
+- Elastic/Solr search behind `TicketsService.find()`.
+- react-router, if deep links are wanted. Move filters into real route state at same time.
+- `Promise`-returning mutations, per-mutation `saving` flags.
+- Assignee visible in list view (`Avatar` beside title cell).

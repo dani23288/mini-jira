@@ -1,14 +1,14 @@
 import { TICKET_STATUSES } from '@org/consts';
 import { getPriorityColorVar } from '../../utils/priority-color';
-import { findAssignee, getPriorityLabel, getStatusLabel } from '../../utils/ticket-labels';
+import { findAssignee, getStatusLabel } from '../../utils/ticket-labels';
 import { Avatar } from '../avatar/avatar';
 import { DropdownMenu } from '../dropdown-menu/dropdown-menu';
+import { PriorityBadge } from '../priority-badge/priority-badge';
 import { getTapeRotation } from './ticket-card.utils';
 import type { ITicketCardProps } from './ticket-card.types';
 import styles from './ticket-card.module.css';
 
 export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITicketCardProps) {
-  const priorityLabel = getPriorityLabel(ticket.priority);
   const statusLabel = getStatusLabel(ticket.status);
   const assignee = findAssignee(ticket.assigneeId);
 
@@ -39,9 +39,7 @@ export function TicketCardBody({ ticket, onEdit, onDelete, onStatusChange }: ITi
       {ticket.description && <p className={styles.description}>{ticket.description}</p>}
 
       <div className={styles.footer}>
-        <span className={styles['priority-badge']} data-priority={ticket.priority}>
-          {priorityLabel}
-        </span>
+        <PriorityBadge priority={ticket.priority} />
         <DropdownMenu
           triggerLabel="Change ticket status"
           triggerClassName={styles['status-trigger']}

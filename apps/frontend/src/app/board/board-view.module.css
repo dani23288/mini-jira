@@ -1,0 +1,6 @@
+.columns {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  flex-wrap: wrap;
+}

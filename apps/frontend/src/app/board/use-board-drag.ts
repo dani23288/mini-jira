@@ -3,7 +3,7 @@ import type { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core'
 import { KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { sortableKeyboardCoordinates } from '@dnd-kit/sortable';
 import type { ITicket, IUseTicketsResult, TicketStatus } from '@org/types';
-import { getRankForEnd, getRankForIndex } from '../../utils/rank';
+import { getRankForEnd, getRankForIndex } from '@org/utils';
 import {
   findTicketById,
   getBoardCollisionDetection,

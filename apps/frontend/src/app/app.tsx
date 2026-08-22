@@ -1,10 +1,10 @@
 import { ConfirmDialogProvider } from '../hooks/use-confirm';
-import { Board } from './board/board';
+import { TicketsPage } from './tickets-page/tickets-page';
 
 export function App() {
   return (
     <ConfirmDialogProvider>
-      <Board />
+      <TicketsPage />
     </ConfirmDialogProvider>
   );
 }
